@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Azetta Manifesto | Accessible Whitebox Intelligence</title>
+    <meta
+      name="description"
+      content="The Azetta manifesto: a declaration for accessible, explainable, fully auditable AI systems built in service of everyone."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="nav-container">
+        <a class="brand-mark" href="index.html" aria-label="Azetta.ai home">
+          <span>Azetta.ai</span><span class="brand-accent"></span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-navigation"
+        >
+          <span class="sr-only">Toggle navigation</span>
+          <span class="nav-toggle-line"></span>
+          <span class="nav-toggle-line"></span>
+          <span class="nav-toggle-line"></span>
+        </button>
+        <nav class="primary-nav" id="primary-navigation">
+          <ul class="nav-list">
+            <li><a href="index.html#hero">Overview</a></li>
+            <li><a href="index.html#products">Products</a></li>
+            <li><a href="index.html#core-architecture">Core Architecture</a></li>
+            <li><a href="index.html#system-architecture">System Diagram</a></li>
+            <li><a href="index.html#terminal-demo">Stacks</a></li>
+            <li><a href="index.html#connect">Engage</a></li>
+            <li><a href="manifesto.html">Manifesto</a></li>
+            <li><a href="blogs.html">Blog</a></li>
+          </ul>
+          <div class="nav-cta">
+            <a
+              class="btn btn-primary"
+              href="mailto:contact@azetta.ai?subject=Join%20the%20Azetta%20waitlist"
+            >
+              Join Waitlist
+            </a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="manifesto-main">
+      <article class="manifesto-article">
+        <h1 class="manifesto-title">Azetta Manifesto</h1>
+
+        <p class="manifesto-lead">
+          The promise of AI began with a simple idea: extend human curiosity by
+          sharing methods, datasets, and ideas in the open.
+        </p>
+
+        <p>
+          The world we inhabit now looks different. High-compute budgets create
+          paywalls, sealed APIs hide reasoning, and data is harvested with
+          memorisation-heavy tricks no one can examine.
+        </p>
+
+        <p>
+          That shift turned intelligence into a luxury. Access flipped, pricing out
+          builders and silencing the communities that need these tools the most.
+        </p>
+
+        <p>
+          Those pressures make verification rare, keep most of the world’s
+          languages outside the loop, and ask institutions to trust black boxes
+          they can neither audit nor appeal.
+        </p>
+
+        <p>
+          Our response is clear. Intelligence is infrastructure, so every training
+          run, dataset choice, and architectural decision must be documented,
+          explainable, and reviewable. Cost must fall, so we design for CPU-first
+          deployment, modest hardware, and transparent pricing. Knowledge must be
+          omnilingual, so our models speak across cultures without translation
+          tolls. And models must be whitebox by law—if a weight, gradient, or
+          explanation cannot be inspected, it has no place in production.
+        </p>
+
+        <p>
+          We end with the same invitation that drove the early promise: builders,
+          investors, and lawmakers must lower barriers, legislate whitebox
+          requirements, insist on omnilingual reach, and demand logs, proofs, and
+          plain language from every vendor. Together we keep AI open, democratic,
+          and worthy of public trust.
+        </p>
+      </article>
+    </main>
+
+    <footer class="manifesto-footer">
+      Drafted in solidarity by the Azetta team — builders of accessible,
+      accountable intelligence.
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+    <script src="main.js" defer></script>
+  </body>
+</html>
+

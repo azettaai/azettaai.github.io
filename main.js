@@ -205,6 +205,50 @@ const SVGAnimation = (function() {
 })();
 
 // ============================================
+// FEATURE: Navigation Controls
+// ============================================
+const Navigation = (function() {
+    'use strict';
+
+    function closeNav(toggle, nav) {
+        toggle.setAttribute('aria-expanded', 'false');
+        nav.classList.remove('is-open');
+        document.body.classList.remove('nav-open');
+    }
+
+    function init() {
+        const toggle = document.querySelector('.nav-toggle');
+        const nav = document.querySelector('.primary-nav');
+
+        if (!toggle || !nav) {
+            return;
+        }
+
+        toggle.addEventListener('click', () => {
+            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!expanded));
+            nav.classList.toggle('is-open');
+            document.body.classList.toggle('nav-open', !expanded);
+        });
+
+        const links = nav.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', () => closeNav(toggle, nav));
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 960 && nav.classList.contains('is-open')) {
+                closeNav(toggle, nav);
+            }
+        });
+    }
+
+    return {
+        init
+    };
+})();
+
+// ============================================
 // FEATURE: CTA Button Handlers
 // ============================================
 const CTAHandlers = (function() {
@@ -326,6 +370,8 @@ const Accessibility = (function() {
         sections.forEach(section => {
             if (section.classList.contains('hero')) {
                 section.setAttribute('aria-label', 'Hero section');
+            } else if (section.classList.contains('products')) {
+                section.setAttribute('aria-label', 'Product suite overview');
             } else if (section.classList.contains('data-flow')) {
                 section.setAttribute('aria-label', 'Core architecture features');
             } else if (section.classList.contains('architecture')) {
@@ -410,6 +456,9 @@ const App = (function() {
             console.warn('Anime.js not loaded yet, SVG animations disabled');
         }
         
+        // Initialize navigation controls
+        Navigation.init();
+
         // Initialize CTA handlers
         CTAHandlers.init();
         
