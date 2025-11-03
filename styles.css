@@ -215,8 +215,8 @@ main {
 
 .logo-box {
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: 260px;
+    height: 260px;
     margin: 0 auto 3rem;
     background: var(--dark);
     border: 2px solid cyan;
@@ -236,8 +236,8 @@ main {
 }
 
 .svg-container {
-    width: 250px;
-    height: 250px;
+    width: 220px;
+    height: 220px;
     filter: drop-shadow(0 0 40px rgba(27, 153, 139, 0.6));
 }
 
@@ -302,7 +302,7 @@ main {
 
 .hero-tagline {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(0.9rem, 2.5vw, 1.4rem);
+    font-size: clamp(0.8rem, 2.3vw, 1.1rem);
     color: var(--light);
     text-align: center;
     max-width: 900px;
@@ -1243,12 +1243,12 @@ main {
         font-size: clamp(2rem, 5vw, 3.5rem);
     }
     .logo-box {
-        width: 250px;
-        height: 250px;
+        width: 220px;
+        height: 220px;
     }
     .svg-container {
-        width: 200px;
-        height: 200px;
+        width: 180px;
+        height: 180px;
     }
     .cta-box {
         padding: 2rem;
