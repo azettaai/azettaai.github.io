@@ -19,6 +19,10 @@
 /* ============================================
    RESET & BASE STYLES
    ============================================ */
+html {
+    scroll-behavior: smooth;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -75,7 +79,7 @@ main {
     justify-content: space-between;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 1.25rem 2rem;
+    padding: 1rem 2rem;
     gap: 2rem;
 }
 
@@ -206,18 +210,18 @@ main {
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 2rem;
+    padding: 1.5rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .logo-box {
     position: relative;
     width: 260px;
     height: 260px;
-    margin: 0 auto 3rem;
+    margin: 0 auto 1.5rem;
     background: var(--dark);
     border: 2px solid cyan;
     animation: borderColor 3s ease-in-out infinite;
