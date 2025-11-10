@@ -404,10 +404,10 @@ main {
 /* Social Media Links */
 .social-links {
     display: flex;
-    gap: clamp(1rem, 2vw, 1.5rem);
+    gap: clamp(0.75rem, 1.5vw, 1rem);
     justify-content: center;
     align-items: center;
-    padding: clamp(1rem, 2vw, 1.5rem) 0;
+    padding: clamp(0.75rem, 1.5vw, 1rem) 0;
     flex-wrap: wrap;
 }
 
@@ -415,10 +415,9 @@ main {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: clamp(2rem, 3vw, 2.5rem);
-    height: clamp(2rem, 3vw, 2.5rem);
-    min-width: var(--touch-target);
-    min-height: var(--touch-target);
+    width: clamp(1.5rem, 2vw, 1.75rem);
+    height: clamp(1.5rem, 2vw, 1.75rem);
+    padding: 0.5rem;
     color: var(--circuit-primary);
     transition: all var(--transition-base);
     position: relative;
