@@ -404,10 +404,10 @@ main {
 /* Social Media Links */
 .social-links {
     display: flex;
-    gap: clamp(0.75rem, 1.5vw, 1rem);
+    gap: clamp(0.875rem, 1.75vw, 1.25rem);
     justify-content: center;
     align-items: center;
-    padding: clamp(0.75rem, 1.5vw, 1rem) 0;
+    padding: clamp(0.875rem, 1.75vw, 1.25rem) 0;
     flex-wrap: wrap;
 }
 
@@ -415,8 +415,8 @@ main {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: clamp(1.5rem, 2vw, 1.75rem);
-    height: clamp(1.5rem, 2vw, 1.75rem);
+    width: clamp(1.75rem, 2.5vw, 2rem);
+    height: clamp(1.75rem, 2.5vw, 2rem);
     padding: 0.5rem;
     color: var(--circuit-primary);
     transition: all var(--transition-base);
