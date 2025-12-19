@@ -731,6 +731,31 @@
                             bipolar</em> regions that wrap around the origin—reflecting its understanding that
                         alignment matters more than direction.
                     </p>
+                    <p>
+                        There's another crucial difference: <strong>magnitude dominance</strong>. The dot product
+                        is heavily impacted by vector magnitude. If you have two perfectly aligned anchors but one
+                        has much higher magnitude, the larger one will dominate the entire space. It's like having
+                        a giant star that overwhelms everything else.
+                    </p>
+                    <p>
+                        Yat behaves differently—and the analogy to <em>gravity</em> is illuminating. Think of
+                        magnitude as mass. The Sun has vastly more mass than Earth, yet the Moon still orbits
+                        Earth, not the Sun. Why? Because gravity follows an <strong>inverse-square law</strong>:
+                        nearby objects have disproportionately stronger influence than distant ones, regardless
+                        of mass.
+                    </p>
+                    <p>
+                        The Yat metric has the same property. Its $1/||x-y||^2$ denominator creates <em>locality</em>.
+                        Each anchor has its own "gravitational sphere of influence." A small anchor nearby can
+                        outweigh a large anchor far away. This means every vector gets to shape its local neighborhood
+                        on the manifold, rather than being overwhelmed by distant high-magnitude vectors.
+                    </p>
+                    <div class="insight-box">
+                        <strong>The Gravity Analogy:</strong> In dot product space, a single high-magnitude vector
+                        is like a black hole—it absorbs everything. In Yat space, it's like a normal star: powerful,
+                        but planets can still exist nearby with their own moons. The inverse-square law preserves
+                        local structure.
+                    </div>
                 </section>
 
                 <section>

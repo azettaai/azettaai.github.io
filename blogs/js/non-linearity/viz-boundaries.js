@@ -6,20 +6,18 @@ export function initVizBoundaries() {
 
     const ctx = canvas.getContext('2d');
 
-    // Start with 2 anchors
     let anchors = [
         { x: -80, y: 0 },
         { x: 80, y: 0 }
     ];
     let currentMetric = 'yat';
 
-    // Richer color palette with gradients
     const anchorPalettes = [
-        { main: [27, 153, 139], glow: [45, 200, 180] },    // teal
-        { main: [237, 33, 124], glow: [255, 100, 160] },   // pink
-        { main: [244, 162, 97], glow: [255, 200, 140] },   // orange
-        { main: [155, 93, 229], glow: [190, 140, 255] },   // purple
-        { main: [0, 187, 249], glow: [100, 220, 255] }     // cyan
+        { main: [27, 153, 139], glow: [45, 200, 180] },
+        { main: [237, 33, 124], glow: [255, 100, 160] },
+        { main: [244, 162, 97], glow: [255, 200, 140] },
+        { main: [155, 93, 229], glow: [190, 140, 255] },
+        { main: [0, 187, 249], glow: [100, 220, 255] }
     ];
 
     function resize() {
@@ -69,8 +67,8 @@ export function initVizBoundaries() {
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Draw smooth decision regions using imageData for performance
-        const resolution = 3;
+        // Draw smooth decision regions - no boundary lines, just color
+        const resolution = 2;
         const temp = currentMetric === 'yat' ? 0.3 : 0.8;
 
         for (let x = 0; x < w; x += resolution) {
@@ -78,230 +76,169 @@ export function initVizBoundaries() {
                 const px = x - cx;
                 const py = y - cy;
 
-                // Compute metric for each anchor
                 const values = anchors.map(a => computeMetric(px, py, a.x, a.y, currentMetric));
                 const probs = softmax(values, temp);
 
-                // Mix colors based on probabilities with smooth blending
+                // Mix colors smoothly
                 let r = 0, g = 0, b = 0;
                 let maxProb = 0;
-                let dominantIdx = 0;
 
                 probs.forEach((prob, i) => {
                     const col = anchorPalettes[i % anchorPalettes.length].main;
                     r += col[0] * prob;
                     g += col[1] * prob;
                     b += col[2] * prob;
-                    if (prob > maxProb) {
-                        maxProb = prob;
-                        dominantIdx = i;
-                    }
+                    if (prob > maxProb) maxProb = prob;
                 });
 
-                // Intensity based on certainty (how dominant is the winner)
-                const certainty = maxProb;
-                const intensity = 0.15 + certainty * 0.5;
-
+                // Higher certainty = more saturation and brightness
+                const intensity = 0.3 + maxProb * 0.5;
                 ctx.fillStyle = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${intensity})`;
                 ctx.fillRect(x, y, resolution, resolution);
             }
         }
 
-        // Draw contour lines for decision boundaries
-        ctx.lineWidth = 1.5;
-        for (let x = resolution; x < w - resolution; x += resolution) {
-            for (let y = resolution; y < h - resolution; y += resolution) {
-                const px = x - cx;
-                const py = y - cy;
-
-                const values = anchors.map(a => computeMetric(px, py, a.x, a.y, currentMetric));
-                const probs = softmax(values, temp);
-                const winner1 = probs.indexOf(Math.max(...probs));
-
-                // Check neighbors
-                const neighbors = [
-                    { dx: resolution, dy: 0 },
-                    { dx: 0, dy: resolution }
-                ];
-
-                for (const n of neighbors) {
-                    const px2 = (x + n.dx) - cx;
-                    const py2 = (y + n.dy) - cy;
-                    const values2 = anchors.map(a => computeMetric(px2, py2, a.x, a.y, currentMetric));
-                    const probs2 = softmax(values2, temp);
-                    const winner2 = probs2.indexOf(Math.max(...probs2));
-
-                    if (winner1 !== winner2) {
-                        // Draw boundary segment with glow
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-                        ctx.shadowBlur = 8;
-                        ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
-                        ctx.beginPath();
-                        ctx.moveTo(x, y);
-                        ctx.lineTo(x + n.dx, y + n.dy);
-                        ctx.stroke();
-                        ctx.shadowBlur = 0;
-                    }
-                }
-            }
-        }
-
-        // For Yat: Draw polarity lines showing anti-parallel activation
-        if (currentMetric === 'yat' && anchors.length >= 1) {
-            ctx.setLineDash([8, 8]);
-            ctx.lineWidth = 2;
-
-            anchors.forEach((a, idx) => {
-                const mag = Math.sqrt(a.x * a.x + a.y * a.y);
-                if (mag > 10) {
-                    const nx = a.x / mag;
-                    const ny = a.y / mag;
-
-                    // Line through origin showing polarity axis
-                    const col = anchorPalettes[idx % anchorPalettes.length].glow;
-                    ctx.strokeStyle = `rgba(${col[0]}, ${col[1]}, ${col[2]}, 0.4)`;
-                    ctx.beginPath();
-                    ctx.moveTo(cx - nx * 300, cy - ny * 300);
-                    ctx.lineTo(cx + nx * 300, cy + ny * 300);
-                    ctx.stroke();
-                }
-            });
-            ctx.setLineDash([]);
-        }
-
-        // Draw subtle grid
+        // Subtle grid
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
         ctx.lineWidth = 1;
-        for (let x = 0; x < w; x += 30) {
+        for (let x = 0; x < w; x += 40) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x, h);
             ctx.stroke();
         }
-        for (let y = 0; y < h; y += 30) {
+        for (let y = 0; y < h; y += 40) {
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(w, y);
             ctx.stroke();
         }
 
-        // Draw origin crosshair
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        // For Yat: Draw polarity axis through each anchor
+        if (currentMetric === 'yat') {
+            ctx.setLineDash([6, 6]);
+            ctx.lineWidth = 1.5;
+
+            anchors.forEach((a, idx) => {
+                const mag = Math.sqrt(a.x * a.x + a.y * a.y);
+                if (mag > 10) {
+                    const nx = a.x / mag;
+                    const ny = a.y / mag;
+                    const col = anchorPalettes[idx % anchorPalettes.length].glow;
+                    ctx.strokeStyle = `rgba(${col[0]}, ${col[1]}, ${col[2]}, 0.35)`;
+                    ctx.beginPath();
+                    ctx.moveTo(cx - nx * 400, cy - ny * 400);
+                    ctx.lineTo(cx + nx * 400, cy + ny * 400);
+                    ctx.stroke();
+                }
+            });
+            ctx.setLineDash([]);
+        }
+
+        // Origin crosshair
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(cx - 20, cy);
-        ctx.lineTo(cx + 20, cy);
-        ctx.moveTo(cx, cy - 20);
-        ctx.lineTo(cx, cy + 20);
+        ctx.moveTo(cx - 15, cy);
+        ctx.lineTo(cx + 15, cy);
+        ctx.moveTo(cx, cy - 15);
+        ctx.lineTo(cx, cy + 15);
         ctx.stroke();
 
-        // Draw anchors with rich glow effects
+        // Draw anchors
         anchors.forEach((anchor, idx) => {
             const ax = cx + anchor.x;
             const ay = cy + anchor.y;
             const palette = anchorPalettes[idx % anchorPalettes.length];
 
             // Outer glow
-            const outerGlow = ctx.createRadialGradient(ax, ay, 0, ax, ay, 50);
-            outerGlow.addColorStop(0, `rgba(${palette.glow[0]}, ${palette.glow[1]}, ${palette.glow[2]}, 0.6)`);
-            outerGlow.addColorStop(0.4, `rgba(${palette.glow[0]}, ${palette.glow[1]}, ${palette.glow[2]}, 0.2)`);
+            const outerGlow = ctx.createRadialGradient(ax, ay, 0, ax, ay, 45);
+            outerGlow.addColorStop(0, `rgba(${palette.glow[0]}, ${palette.glow[1]}, ${palette.glow[2]}, 0.5)`);
+            outerGlow.addColorStop(0.5, `rgba(${palette.glow[0]}, ${palette.glow[1]}, ${palette.glow[2]}, 0.15)`);
             outerGlow.addColorStop(1, `rgba(${palette.glow[0]}, ${palette.glow[1]}, ${palette.glow[2]}, 0)`);
             ctx.beginPath();
-            ctx.arc(ax, ay, 50, 0, Math.PI * 2);
+            ctx.arc(ax, ay, 45, 0, Math.PI * 2);
             ctx.fillStyle = outerGlow;
             ctx.fill();
 
-            // Inner core
-            const innerGlow = ctx.createRadialGradient(ax, ay, 0, ax, ay, 12);
+            // Core
+            const innerGlow = ctx.createRadialGradient(ax, ay, 0, ax, ay, 10);
             innerGlow.addColorStop(0, '#fff');
-            innerGlow.addColorStop(0.3, `rgb(${palette.glow[0]}, ${palette.glow[1]}, ${palette.glow[2]})`);
+            innerGlow.addColorStop(0.4, `rgb(${palette.glow[0]}, ${palette.glow[1]}, ${palette.glow[2]})`);
             innerGlow.addColorStop(1, `rgb(${palette.main[0]}, ${palette.main[1]}, ${palette.main[2]})`);
             ctx.beginPath();
-            ctx.arc(ax, ay, 12, 0, Math.PI * 2);
+            ctx.arc(ax, ay, 10, 0, Math.PI * 2);
             ctx.fillStyle = innerGlow;
             ctx.fill();
-
-            // White ring
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
             ctx.lineWidth = 2;
             ctx.stroke();
 
             // Label
             ctx.fillStyle = '#fff';
-            ctx.font = 'bold 14px "Courier New", monospace';
+            ctx.font = 'bold 12px "Courier New", monospace';
             ctx.textAlign = 'center';
-            ctx.fillText(String.fromCharCode(65 + idx), ax, ay + 5);
+            ctx.fillText(String.fromCharCode(65 + idx), ax, ay + 4);
         });
 
-        // Info panel with glassmorphism effect
-        const panelW = 260, panelH = 100, panelX = 15, panelY = 15;
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        // Info panel
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
         ctx.beginPath();
-        ctx.roundRect(panelX, panelY, panelW, panelH, 8);
+        ctx.roundRect(15, 15, 250, 90, 6);
         ctx.fill();
         ctx.strokeStyle = getMetricColor();
         ctx.lineWidth = 2;
         ctx.stroke();
 
         ctx.textAlign = 'left';
-        ctx.font = 'bold 14px "Courier New", monospace';
+        ctx.font = 'bold 13px "Courier New", monospace';
         ctx.fillStyle = getMetricColor();
-        ctx.fillText(getMetricName() + ' Boundaries', panelX + 15, panelY + 28);
+        ctx.fillText(getMetricName() + ' Boundaries', 28, 38);
 
-        ctx.font = '11px "Courier New", monospace';
-        ctx.fillStyle = '#bbb';
-        ctx.fillText(`${anchors.length} anchor${anchors.length > 1 ? 's' : ''} • softmax classification`, panelX + 15, panelY + 48);
+        ctx.font = '10px "Courier New", monospace';
+        ctx.fillStyle = '#aaa';
+        ctx.fillText(`${anchors.length} anchor${anchors.length > 1 ? 's' : ''} • softmax`, 28, 55);
 
         if (currentMetric === 'yat') {
             ctx.fillStyle = '#ffdd66';
-            ctx.fillText('⚡ Opposite vectors also activate!', panelX + 15, panelY + 68);
-            ctx.fillStyle = '#888';
-            ctx.fillText('(squared dot product → polarity blind)', panelX + 15, panelY + 85);
+            ctx.fillText('⚡ Bipolar: opposite vectors activate too', 28, 72);
+            ctx.fillStyle = '#777';
+            ctx.fillText('(dashed lines = polarity axes)', 28, 88);
         } else if (currentMetric === 'euclidean') {
-            ctx.fillStyle = '#888';
-            ctx.fillText('Voronoi-like partitions', panelX + 15, panelY + 68);
-            ctx.fillText('Based purely on distance', panelX + 15, panelY + 85);
+            ctx.fillStyle = '#777';
+            ctx.fillText('Voronoi-like • distance only', 28, 72);
         } else {
-            ctx.fillStyle = '#888';
-            ctx.fillText('Linear hyperplane boundaries', panelX + 15, panelY + 68);
-            ctx.fillText('Based on projection direction', panelX + 15, panelY + 85);
+            ctx.fillStyle = '#777';
+            ctx.fillText('Linear hyperplanes • direction only', 28, 72);
         }
 
-        // Formula panel
-        const fPanelW = 180, fPanelH = 50, fPanelX = w - fPanelW - 15, fPanelY = 15;
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        // Formula
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
         ctx.beginPath();
-        ctx.roundRect(fPanelX, fPanelY, fPanelW, fPanelH, 6);
+        ctx.roundRect(w - 170, 15, 155, 42, 5);
         ctx.fill();
-        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
 
-        ctx.font = '11px "Courier New", monospace';
-        ctx.fillStyle = '#aaa';
+        ctx.font = '10px "Courier New", monospace';
+        ctx.fillStyle = '#999';
         switch (currentMetric) {
             case 'euclidean':
-                ctx.fillText('sim = 1 / (1 + d)', fPanelX + 12, fPanelY + 22);
-                ctx.fillStyle = '#666';
-                ctx.fillText('P = softmax(sim)', fPanelX + 12, fPanelY + 38);
+                ctx.fillText('P ∝ 1 / (1 + dist)', w - 160, 32);
                 break;
             case 'dot':
-                ctx.fillText('sim = a · x', fPanelX + 12, fPanelY + 22);
-                ctx.fillStyle = '#666';
-                ctx.fillText('P = softmax(sim)', fPanelX + 12, fPanelY + 38);
+                ctx.fillText('P ∝ a · x', w - 160, 32);
                 break;
             case 'yat':
-                ctx.fillText('sim = (a·x)² / d²', fPanelX + 12, fPanelY + 22);
-                ctx.fillStyle = '#666';
-                ctx.fillText('P = softmax(sim)', fPanelX + 12, fPanelY + 38);
+                ctx.fillText('P ∝ (a·x)² / ||a-x||²', w - 160, 32);
                 break;
         }
+        ctx.fillStyle = '#666';
+        ctx.fillText('then softmax', w - 160, 48);
 
-        // Instructions at bottom
+        // Bottom instructions
         ctx.font = '10px "Courier New", monospace';
-        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
         ctx.textAlign = 'center';
-        ctx.fillText('Click anywhere to add anchors (max 5) • Use buttons to switch metrics', w / 2, h - 12);
+        ctx.fillText('Click to add anchors • Buttons to switch metrics', w / 2, h - 10);
         ctx.textAlign = 'left';
     }
 
@@ -325,43 +262,20 @@ export function initVizBoundaries() {
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
-
-        if (e.clientY - rect.top > rect.height - 40) return;
-
+        if (e.clientY - rect.top > rect.height - 35) return;
         if (anchors.length < 5) {
             anchors.push({ x, y });
             draw();
         }
     });
 
-    document.getElementById('viz-bound-euclidean')?.addEventListener('click', () => {
-        currentMetric = 'euclidean';
-        draw();
-    });
-
-    document.getElementById('viz-bound-dot')?.addEventListener('click', () => {
-        currentMetric = 'dot';
-        draw();
-    });
-
-    document.getElementById('viz-bound-yat')?.addEventListener('click', () => {
-        currentMetric = 'yat';
-        draw();
-    });
-
-    document.getElementById('viz-bound-reset')?.addEventListener('click', () => {
-        anchors = [
-            { x: -80, y: 0 },
-            { x: 80, y: 0 }
-        ];
-        draw();
-    });
-
+    document.getElementById('viz-bound-euclidean')?.addEventListener('click', () => { currentMetric = 'euclidean'; draw(); });
+    document.getElementById('viz-bound-dot')?.addEventListener('click', () => { currentMetric = 'dot'; draw(); });
+    document.getElementById('viz-bound-yat')?.addEventListener('click', () => { currentMetric = 'yat'; draw(); });
+    document.getElementById('viz-bound-reset')?.addEventListener('click', () => { anchors = [{ x: -80, y: 0 }, { x: 80, y: 0 }]; draw(); });
     document.getElementById('viz-bound-add')?.addEventListener('click', () => {
         if (anchors.length < 5) {
-            const x = (Math.random() - 0.5) * 200;
-            const y = (Math.random() - 0.5) * 200;
-            anchors.push({ x, y });
+            anchors.push({ x: (Math.random() - 0.5) * 200, y: (Math.random() - 0.5) * 200 });
             draw();
         }
     });
