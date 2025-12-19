@@ -209,8 +209,10 @@
                 <section>
                     <h2>The Geometric Trap</h2>
                     <p>
-                        Ask anyone to visualize a vector, and they'll draw an arrow. Maybe in 2D. Perhaps in 3D
-                        if they're feeling ambitious. But what about a vector in 1000 dimensions? 10,000?
+                        Ask anyone to visualize a vector, and they'll draw an arrow. Maybe in $\mathbb{R}^2$. Perhaps in
+                        $\mathbb{R}^3$
+                        if they're feeling ambitious. But what about a vector $\mathbf{v} \in \mathbb{R}^{1000}$? Or
+                        $\mathbb{R}^{10000}$?
                     </p>
                     <p>
                         The traditional geometric view of vectors—as arrows in space—fundamentally
@@ -250,17 +252,18 @@
                         as an <strong>atom</strong>?
                     </p>
                     <p>
-                        Each dimension of the vector becomes a particle orbiting the nucleus. The value
-                        of that dimension determines the particle's "charge":
+                        Each dimension $v_i$ of the vector $\mathbf{v} = (v_1, v_2, \ldots, v_n)$ becomes a particle
+                        orbiting the nucleus. The value of that dimension determines the particle's "charge":
                     </p>
                     <ul>
-                        <li><strong>Positive values</strong> → Protons (red/pink particles)</li>
-                        <li><strong>Negative values</strong> → Electrons (blue particles)</li>
-                        <li><strong>Near-zero values</strong> → Neutral (gray, dim)</li>
+                        <li>$v_i > 0$ → <strong>Protons</strong> (red/pink particles)</li>
+                        <li>$v_i < 0$ → <strong>Electrons</strong> (blue particles)</li>
+                        <li>$v_i \approx 0$ → <strong>Neutral</strong> (gray, dim)</li>
                     </ul>
                     <p>
-                        The magnitude determines the particle's "energy"—larger values sit in outer orbits,
-                        smaller values cluster near the nucleus. Suddenly, a 100-dimensional vector becomes
+                        The magnitude $|v_i|$ determines the particle's "energy"—larger values sit in outer orbits,
+                        smaller values cluster near the nucleus. Suddenly, a vector $\mathbf{v} \in \mathbb{R}^{100}$
+                        becomes
                         a single, comprehensible object: an atom with its unique particle distribution.
                     </p>
 
@@ -317,10 +320,10 @@
                     </div>
 
                     <div class="insight-box">
-                        <strong>The Physics Insight:</strong> Just like gravity follows an inverse-square law,
-                        Yat follows an inverse-square relationship with distance. Nearby vectors dominate;
-                        distant vectors contribute weakly. This preserves <em>locality</em>—the most
-                        important property for understanding structure.
+                        <strong>The Physics Insight:</strong> Just like gravity follows $F \propto 1/r^2$,
+                        the Yat follows $\text{Yat} \propto 1/d^2$ where $d = \|\mathbf{x} - \mathbf{y}\|$.
+                        Nearby vectors dominate; distant vectors contribute weakly. This preserves
+                        <em>locality</em>—the most important property for understanding structure.
                     </div>
                 </section>
 
@@ -391,10 +394,16 @@
                         independent particles, but as a <strong>wave</strong>.
                     </p>
                     <p>
-                        When we <strong>normalize</strong> a vector to unit length, something profound happens.
-                        The dimensions are no longer independent—they become <em>coupled</em>. If one
-                        dimension grows, others must shrink to maintain the constraint. The vector
-                        becomes a single, coherent <strong>signal</strong>.
+                        When we <strong>normalize</strong> a vector to unit length:
+                    </p>
+                    <p style="text-align: center; font-size: 1.2em; margin: var(--space-lg) 0;">
+                        $$\hat{\mathbf{v}} = \frac{\mathbf{v}}{\|\mathbf{v}\|} \quad \text{where} \quad
+                        \|\hat{\mathbf{v}}\| = 1$$
+                    </p>
+                    <p>
+                        something profound happens. The dimensions are no longer independent—they become
+                        <em>coupled</em>. If one dimension grows, others must shrink to maintain the constraint
+                        $\sum_i \hat{v}_i^2 = 1$. The vector becomes a single, coherent <strong>signal</strong>.
                     </p>
 
                     <div class="viz-container">
@@ -441,9 +450,11 @@
                         A clear signal rises above the noise floor; a weak signal drowns in randomness.
                     </p>
                     <p>
-                        The Yat vector operates as a coherence detector. When comparing two unit vectors
-                        (waves), a high Yat means they're transmitting on the same "frequency"—their
-                        signals are aligned. A low Yat means they're noise to each other—orthogonal,
+                        The Yat operates as a coherence detector. When comparing two unit vectors
+                        $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ (waves), a high Yat means they're
+                        transmitting on the same "frequency"—their signals are aligned. A low Yat
+                        means they're noise to each other—orthogonal ($\hat{\mathbf{x}} \cdot \hat{\mathbf{y}} \approx
+                        0$),
                         carrying no mutual information.
                     </p>
 
@@ -461,9 +472,11 @@
 
                     <div class="insight-box">
                         <strong>The Signal Insight:</strong> In the wave view, similarity isn't about
-                        matching absolute values—it's about matching <em>patterns</em>. Two signals can
-                        have completely different amplitudes but identical waveforms. The Yat captures
-                        this pattern similarity while still respecting proximity in the space.
+                        matching absolute values—it's about matching <em>patterns</em>. Two signals
+                        $\mathbf{x}$ and $\alpha\mathbf{x}$ (where $\alpha > 0$) have identical waveforms
+                        but different amplitudes. The Yat captures this pattern similarity via
+                        $(\mathbf{x} \cdot \mathbf{y})^2$, while still respecting proximity via $\|\mathbf{x} -
+                        \mathbf{y}\|^2$.
                     </div>
                 </section>
 
