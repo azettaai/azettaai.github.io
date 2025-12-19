@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>The Meaning of Non-Linearity - Azetta.ai Blog</title>
+    <meta name="title" content="The Meaning of Non-Linearity - Azetta.ai Blog" />
+    <meta name="description"
+        content="Beyond scatter plots: why true non-linearity is about orthogonality and distance in high-dimensional spaces, not curves between two features." />
+    <meta name="author" content="Taha Bouhsine" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://azetta.ai/blogs/meaning-of-non-linearity.html" />
+    <meta property="og:title" content="The Meaning of Non-Linearity - Azetta.ai Blog" />
+    <meta property="og:description"
+        content="Beyond scatter plots: why true non-linearity is about orthogonality and distance in high-dimensional spaces." />
+    <meta property="article:published_time" content="2025-12-18" />
+    <meta property="article:author" content="Taha Bouhsine" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://azetta.ai/blogs/meaning-of-non-linearity.html" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#1b998b" />
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Press+Start+2P&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+    <style>
+        /* Interactive visualization containers */
+        .viz-container {
+            width: 100%;
+            margin: var(--space-xl) 0;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(27, 153, 139, 0.4);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) var(--space-lg);
+            background: rgba(27, 153, 139, 0.1);
+            border-bottom: 1px solid rgba(27, 153, 139, 0.3);
+        }
+
+        .viz-title {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--circuit-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .viz-hint {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--light);
+            opacity: 0.6;
+        }
+
+        .viz-canvas {
+            display: block;
+            width: 100%;
+            height: 350px;
+            cursor: crosshair;
+        }
+
+        .viz-caption {
+            padding: var(--space-md) var(--space-lg);
+            font-size: 0.9rem;
+            color: var(--light);
+            opacity: 0.8;
+            border-top: 1px solid rgba(27, 153, 139, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Callout box for key insights */
+        .insight-box {
+            margin: var(--space-xl) 0;
+            padding: var(--space-lg);
+            background: linear-gradient(135deg, rgba(237, 33, 124, 0.1), rgba(27, 153, 139, 0.1));
+            border-left: 4px solid var(--circuit-accent);
+            font-style: italic;
+        }
+
+        .insight-box strong {
+            color: var(--circuit-accent);
+            font-style: normal;
+        }
+
+        /* Math-like expressions */
+        .math-expr {
+            font-family: var(--font-code);
+            background: rgba(27, 153, 139, 0.1);
+            padding: 0.2em 0.5em;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header" aria-label="Primary navigation">
+        <div class="nav-container">
+            <a class="brand-mark" href="../index.html#hero" aria-label="Azetta.ai home">
+                <span>Azetta.ai</span><span class="brand-accent"></span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="nav-toggle-line"></span>
+                <span class="nav-toggle-line"></span>
+                <span class="nav-toggle-line"></span>
+            </button>
+            <nav class="primary-nav" id="primary-navigation">
+                <ul class="nav-list">
+                    <li><a href="../index.html#hero">Overview</a></li>
+                    <li><a href="../index.html#products">Products</a></li>
+                    <li><a href="../index.html#system-architecture">Architecture</a></li>
+                    <li><a href="../index.html#connect">Contact</a></li>
+                    <li><a href="../manifesto.html">Manifesto</a></li>
+                    <li><a href="../blogs.html" class="active">Blog</a></li>
+                    <li><a href="../news.html">Newsroom</a></li>
+                </ul>
+                <div class="nav-cta">
+                    <a class="btn btn-primary"
+                        href="mailto:contact@azetta.ai?subject=Join%20the%20Azetta%20waitlist">Join Waitlist</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Article Header -->
+        <article class="blog-article">
+            <header class="article-header">
+                <div class="article-meta">
+                    <span class="blog-tag">Information Geometry</span>
+                    <time class="blog-date" datetime="2025-12-18">December 18, 2025</time>
+                </div>
+                <h1 class="article-title">The Meaning of Non-Linearity</h1>
+                <p class="article-subtitle">
+                    Beyond scatter plots: why the true geometry of information lies in orthogonality and distance, not
+                    curves between features
+                </p>
+                <div class="article-author">
+                    <span class="author-name">By Taha Bouhsine</span>
+                    <span class="read-time">12 min read</span>
+                </div>
+            </header>
+
+            <div class="article-content">
+                <section>
+                    <h2>The Definition Crisis</h2>
+                    <p>
+                        In the vast literature of machine learning, "non-linearity" is a term tossed around with
+                        reckless
+                        abandon. It means everything and nothing. To a statistician, it's a deviation from a straight
+                        line.
+                        To a neuroscientist, it's a firing threshold. To a deep learning engineer, it's an activation
+                        function like ReLU or Sigmoid.
+                    </p>
+                    <p>
+                        This lack of a unified definition isn't just a semantic annoyance—it is the root cause of the
+                        <a href="black-box-dilemma.html">Black Box Dilemma</a>. Because we lack a precise, geometric
+                        definition of what non-linearity <em>is</em>, we build systems that rely on opaque algebraic
+                        transformations to achieve it.
+                    </p>
+                    <p>
+                        We sacrifice interpretability for performance because we assume non-linearity requires
+                        complexity.
+                        This confusion fundamentally blocks any attempt to build <a href="../manifesto.html">Whitebox
+                            AI</a>.
+                        If we can't define the geometry of our intelligence, we can't hope to understand it.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The Lie of Projection</h2>
+                    <p>
+                        Every machine learning course starts with the same lie: non-linearity means curves.
+                        You see a scatter plot of Feature X against Feature Y. If the points form a parabola or a
+                        spiral,
+                        you're told the relationship is non-linear. If they form a line, it's linear.
+                    </p>
+                    <p>
+                        This is a <strong>projection fallacy</strong>. When you look at a 2D plot, you are looking at a
+                        shadow
+                        of a high-dimensional object. What looks like a curve in 2D is often just a straight line viewed
+                        from the wrong angle, or a complex manifold flattened until it breaks.
+                    </p>
+                    <p>
+                        By defining non-linearity as "curves," we've anchored our entire field to a low-dimensional
+                        intuition that fails in the spaces where AI actually operates. We need to stop looking at
+                        features and start looking at the geometry of information itself.
+                    </p>
+
+                    <!-- Conventional View Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// The Projective Illusion</span>
+                            <span class="viz-hint">Click to cycle patterns</span>
+                        </div>
+                        <canvas id="viz-2d" class="viz-canvas"></canvas>
+                        <div class="viz-caption">
+                            Polynomials, exponentials, spirals—these are just shadows. The truth is in the full
+                            geometry.
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Rows, Not Columns</h2>
+                    <p>
+                        To understand the true nature of information, we must shift our perspective from
+                        <em>columns</em>
+                        to <em>rows</em>.
+                    </p>
+                    <p>
+                        <strong>Columns (Features)</strong> are individual measurements. Comparing them tells you about
+                        correlations within your dataset. This is statistics.
+                    </p>
+                    <p>
+                        <strong>Rows (Observations)</strong> are complete entities. A patient, a user, a state of the
+                        universe.
+                        Each row is a vector in $n$-dimensional space. Comparing them tells you about the relationship
+                        between <em>realities</em>. This is geometry.
+                    </p>
+
+                    <div class="insight-box">
+                        <strong>The Shift:</strong> Stop asking how Feature A relates to Feature B. Start asking how
+                        Observation $\mathbf{x}$ relates to Observation $\mathbf{y}$ in the full dimensionality of the
+                        space.
+                    </div>
+
+                    <!-- Rows vs Columns Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// Columns vs Rows</span>
+                            <span class="viz-hint">Click to toggle view</span>
+                        </div>
+                        <canvas id="viz-rows-cols" class="viz-canvas"></canvas>
+                        <div class="viz-caption">
+                            <strong>Left:</strong> Statistics (Feature vs Feature).
+                            <strong>Right:</strong> Geometry (Vector vs Vector).
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Redefining Non-Linearity</h2>
+                    <p>
+                        Once we treat observations as vectors, "linear" and "non-linear" take on precise geometric
+                        meanings
+                        that have nothing to do with curves.
+                    </p>
+                    <p>
+                        <strong>Linearity is Identity.</strong> The most linear relationship possible is when two
+                        observations
+                        are effectively the same. They point in the same direction (parallel) and they occupy the same
+                        location (close).
+                    </p>
+                    <p>
+                        <strong>Non-Linearity is Independence.</strong> The most non-linear relationship possible is
+                        when two
+                        observations share <em>nothing</em>. They are completely orthogonal (90° apart) and distant from
+                        each other.
+                    </p>
+
+                    <!-- Orthogonality Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// Geometric Independence</span>
+                            <span class="viz-hint">Drag the green vector</span>
+                        </div>
+                        <canvas id="viz-orthogonality" class="viz-canvas"></canvas>
+                        <div class="viz-caption">
+                            As vectors become orthogonal, their information overlap vanishes.
+                        </div>
+                    </div>
+
+                    <p>
+                        This redefinition aligns with the deepest principles of information theory. Orthogonal
+                        distributions
+                        have zero mutual information. Orthogonal signals share no bandwidth. In the geometry of
+                        intelligence,
+                        <strong>non-linearity is simply the measure of how independent two observations are.</strong>
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The Metric Gap</h2>
+                    <p>
+                        If linearity means "parallel and close" and non-linearity means "orthogonal and far," then our
+                        standard
+                        metrics are broken.
+                    </p>
+                    <ul class="comparison-list">
+                        <li>
+                            <strong>Cosine Similarity</strong> only sees angle. It knows if vectors are parallel, but
+                            ignores
+                            magnitude and distance. Two vectors can be "identical" by cosine similarity yet light-years
+                            apart.
+                        </li>
+                        <li>
+                            <strong>Euclidean Distance</strong> only sees separation. It lumps together vectors that are
+                            orthogonal
+                            but close, and parallel but far. It is blind to alignment.
+                        </li>
+                    </ul>
+
+                    <!-- Metric Compare Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// The Metric Gap</span>
+                            <span class="viz-hint">Click to move anchor point</span>
+                        </div>
+                        <canvas id="viz-metric-compare" class="viz-canvas" style="height: 350px;"></canvas>
+                        <div class="viz-caption">
+                            <strong>Left:</strong> Euclidean combines everything into one distance.
+                            <strong>Center:</strong> Cosine ignores distance entirely.
+                            <strong>Right:</strong> We need something that captures both.
+                        </div>
+                    </div>
+
+                    <p>
+                        We need a metric that rewards alignment (parallelism) and penalizes separation (distance)
+                        simultaneously.
+                        We need a unified measure of geometric relationship.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The Solution: The Yat</h2>
+                    <p>
+                        To close this gap, we introduce a new metric: the <strong>Yat</strong>.
+                    </p>
+                    <p style="text-align: center; font-size: 1.4em; margin: var(--space-xl) 0;">
+                        $$\text{Yat}(\mathbf{x}, \mathbf{y}) = \frac{(\mathbf{x} \cdot \mathbf{y})^2}{\|\mathbf{x} -
+                        \mathbf{y}\|^2}$$
+                    </p>
+                    <p>
+                        This simple ratio captures the full definition of linearity we established:
+                    </p>
+                    <ul>
+                        <li><strong>Numerator $(\mathbf{x} \cdot \mathbf{y})^2$:</strong> Measures alignment. Maximized
+                            when
+                            vectors are parallel. Zero when orthogonal.</li>
+                        <li><strong>Denominator $\|\mathbf{x} - \mathbf{y}\|^2$:</strong> Measures separation.
+                            Approaches
+                            zero when vectors are close (driving the Yat to infinity). Large when vectors are far.</li>
+                    </ul>
+
+                    <div class="insight-box">
+                        <strong>The Result:</strong>
+                        <br>High Yat = Parallel + Close = <strong>Relationship</strong> (Linear)
+                        <br>Low Yat = Orthogonal + Far = <strong>Independence</strong> (Non-Linear)
+                    </div>
+
+                    <!-- Yat Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// The Yat Calculator</span>
+                            <span class="viz-hint">Drag either vector</span>
+                        </div>
+                        <canvas id="viz-yat" class="viz-canvas"></canvas>
+                        <div class="viz-caption">
+                            One number that captures the complete geometric relationship.
+                        </div>
+                    </div>
+                </section>
+
+
+                <section>
+                    <h2>The High-Dimensional Standard</h2>
+                    <p>
+                        Why go through all this trouble? Because in high-dimensional space—where all meaningful AI
+                        lives—
+                        <strong>orthogonality is the baseline</strong>.
+                    </p>
+                    <p>
+                        In 1000 dimensions, two random vectors are almost guaranteed to be orthogonal. Linearity
+                        (alignment
+                        and proximity) is a rare, precious event. It signifies a meaningful connection in a vast sea of
+                        independence.
+                    </p>
+
+                    <!-- High-D Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// The Blessings of Dimensionality</span>
+                            <span class="viz-hint">Click to add dimensions</span>
+                        </div>
+                        <canvas id="viz-dimensions" class="viz-canvas"></canvas>
+                        <div class="viz-caption">
+                            As dimensions rise, everything becomes non-linear (orthogonal). Linearity becomes the signal
+                            in the noise.
+                        </div>
+                    </div>
+
+                    <p>
+                        Models that look for curves in 2D projections are chasing ghosts. True intelligence consists of
+                        navigating this high-dimensional field, identifying the rare threads of linearity (Yat peaks)
+                        that connect seemingly unrelated observations.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The Geometry of Understanding</h2>
+                    <p>
+                        This leads us to a new visualization of information. Imagine a field where every observation
+                        generates
+                        a "gravity well" of linearity.
+                    </p>
+
+                    <!-- Yat Field Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// Information Manifold</span>
+                            <span class="viz-hint">Hover for values • Click to move anchor</span>
+                        </div>
+                        <canvas id="viz-yat-field" class="viz-canvas" style="height: 400px;"></canvas>
+                        <div class="viz-controls" style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                            <button id="viz-zoom-in"
+                                style="padding: 6px 12px; background: rgba(27,153,139,0.3); border: 1px solid #1b998b; color: #1b998b; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">Zoom
+                                +</button>
+                            <button id="viz-zoom-out"
+                                style="padding: 6px 12px; background: rgba(27,153,139,0.3); border: 1px solid #1b998b; color: #1b998b; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">Zoom
+                                -</button>
+                            <button id="viz-rotate-left"
+                                style="padding: 6px 12px; background: rgba(27,153,139,0.3); border: 1px solid #1b998b; color: #1b998b; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">◀
+                                Rotate</button>
+                            <button id="viz-rotate-right"
+                                style="padding: 6px 12px; background: rgba(27,153,139,0.3); border: 1px solid #1b998b; color: #1b998b; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">Rotate
+                                ▶</button>
+                            <button id="viz-reset"
+                                style="padding: 6px 12px; background: rgba(230,126,163,0.2); border: 1px solid #e67ea3; color: #e67ea3; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">Reset</button>
+                            <button id="viz-auto-rotate"
+                                style="padding: 6px 12px; background: rgba(100,100,100,0.3); border: 1px solid #888; color: #aaa; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">Auto-Rotate</button>
+                        </div>
+                        <div class="viz-caption">
+                            The Yat Field transforms a dataset into a landscape. High peaks are linear relationships.
+                            The vast flatlands are non-linear independence.
+                        </div>
+                    </div>
+
+                    <p>
+                        This is the foundation of <a href="../manifesto.html">Whitebox AI</a>. We don't need layers of
+                        opaque non-linear activation functions to "bend" space. We simply need to measure the geometry
+                        that is already there. By respecting the orthogonality and distance of high-dimensional vectors,
+                        we can build systems that understand the world as it is—not as a distorted 2D projection.
+                    </p>
+
+                    <div class="insight-box">
+                        <strong>The Takeaway:</strong> Non-linearity isn't a curve. It's distance and direction.
+                        It is the fundamental vacuum of independence that separates distinct realities. To find meaning,
+                        we must measure the bridge across that vacuum.
+                    </div>
+                </section>
+
+                <section>
+                    <h2>The Polarity Paradox</h2>
+                    <p>
+                        Wait—why do we treat anti-parallel vectors (opposites) as "linear"?
+                    </p>
+                    <p>
+                        In human intuition, "opposite" means "disagreement". But in information theory,
+                        <strong>opposites are perfect predictors</strong>. If I know you always vote the opposite
+                        of me, I can predict your vote with 100% accuracy. We are linearly dependent.
+                    </p>
+
+                    <!-- Polarity Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// The Polarity Horseshoe</span>
+                            <span class="viz-hint">Drag vector to rotate</span>
+                        </div>
+                        <canvas id="viz-polarity" class="viz-canvas"></canvas>
+                        <div class="viz-caption">
+                            <strong>Cosine:</strong> Drops linearly to -1 (treats opposite as error).<br>
+                            <strong>Yat:</strong> Curves back up to High (treats opposite as information).
+                        </div>
+                    </div>
+
+                    <p>
+                        Standard metrics like Cosine Similarity penalize opposites (-1). The Yat squares the
+                        relationship,
+                        bending the number line into a horseshoe. It recognizes that in a universe of random
+                        orthogonality,
+                        finding your exact opposite is just as rare and valuable as finding your twin.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The XOR Hallmark</h2>
+                    <p>
+                        The ultimate test of any definition of non-linearity is the XOR problem.
+                        In standard machine learning, XOR is the "hello world" of non-linear problems because
+                        you cannot draw a straight line to separate the classes.
+                        $$(0,0) \to 0, \quad (1,1) \to 0, \quad (0,1) \to 1, \quad (1,0) \to 1$$
+                    </p>
+                    <p>
+                        But look what happens when we view this geometrically.
+                        If we center our coordinates (so 0 becomes -1), our points become vectors:
+                    </p>
+                    <ul>
+                        <li><strong>Class 0:</strong> $\mathbf{v}_{0a} = (1, 1)$ and $\mathbf{v}_{0b} = (-1, -1)$</li>
+                        <li><strong>Class 1:</strong> $\mathbf{v}_{1a} = (-1, 1)$ and $\mathbf{v}_{1b} = (1, -1)$</li>
+                    </ul>
+                    <p>
+                        Now, simply measure the relationship of every point to the reference vector $\mathbf{r} = (1,
+                        1)$.
+                    </p>
+                    <ul>
+                        <li>The Class 0 vectors are <strong>Parallel</strong>. $(1,1)$ is identical, and $(-1,-1)$ is
+                            just pointing backwards. They line up.</li>
+                        <li>The Class 1 vectors are <strong>Orthogonal</strong>. Their dot product with $(1,1)$ is zero.
+                            $(-1 \cdot 1) + (1 \cdot 1) = 0$.</li>
+                    </ul>
+
+                    <!-- XOR Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// The XOR Hallmark</span>
+                            <span class="viz-hint">Click to cycle points</span>
+                        </div>
+                        <canvas id="viz-xor" class="viz-canvas"></canvas>
+                        <div class="viz-caption">
+                            <strong>Class 0 (Teal):</strong> Parallel or Anti-Parallel to (1,1).<br>
+                            <strong>Class 1 (Pink):</strong> Strictly Orthogonal to (1,1).<br>
+                            The conceptual "non-linearity" is actually just 90° geometry.
+                        </div>
+                    </div>
+
+                    <p>
+                        Standard metrics fail here. Euclidean distance thinks $(-1,-1)$ is far away from $(1,1)$, so it
+                        groups it poorly. But the Yat sees the truth: $(-1,-1)$ is perfectly aligned (anti-parallel).
+                        XOR isn't a complex curve problem. It's a simple orthogonality check.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The Myth of Complexity</h2>
+                    <p>
+                        This reveals a startling truth about "Deep" Learning. We add layer after layer of
+                        neural networks to "fold" the space until XOR becomes solvable. We assume the problem
+                        is complex, so we build complex tools.
+                    </p>
+                    <p>
+                        But if you use the right metric, the problem solves itself.
+                    </p>
+
+                    <!-- Lift Viz -->
+                    <div class="viz-container">
+                        <div class="viz-header">
+                            <span class="viz-title">// The Metric Lift</span>
+                            <span class="viz-hint">Auto-rotating 3D View</span>
+                        </div>
+                        <canvas id="viz-lift" class="viz-canvas"></canvas>
+                        <div class="viz-caption">
+                            The Yat metric naturally "lifts" the linear points out of the plane.
+                            We don't need layers to warp space; we just need to measure the geometry that exists.
+                        </div>
+                    </div>
+
+                    <p>
+                        When you define non-linearity as orthogonality, you don't need black-box transformations
+                        to find the answer. You just need to look at the data through the lens of
+                        <a href="meaning-of-information.html">information geometry</a>.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Why This Matters</h2>
+                    <p>
+                        This isn't abstract theory. It's a practical framework that changes how we
+                        should build intelligent systems.
+                    </p>
+                    <p>
+                        <strong>Medical diagnosis:</strong> A patient isn't a bag of independent symptoms—
+                        they're a complete observation vector. Two patients might look similar on a
+                        2D symptom plot but have completely orthogonal conditions in the full clinical
+                        space. The Yat sees what scatter plots miss.
+                    </p>
+                    <p>
+                        <strong>Recommendation systems:</strong> Users aren't just "similar" or "different"—
+                        they exist in a high-dimensional preference space. Two users who appear identical
+                        in their movie ratings might be orthogonal in the dimensions that actually predict
+                        what they'll enjoy next.
+                    </p>
+                    <p>
+                        <strong>Scientific discovery:</strong> Experimental observations shouldn't be
+                        analyzed by correlation between measured variables. The question is: which
+                        observations are truly independent? Which carry novel information? The Yat
+                        tells you directly.
+                    </p>
+
+                    <div class="insight-box">
+                        <strong>The Core Principle:</strong> Compare complete vectors, not individual
+                        features. Measure orthogonality and distance together. Preserve full-dimensional
+                        geometry instead of projecting it away.
+                    </div>
+
+                    <p>
+                        The <a href="black-box-dilemma.html">black box systems</a> we've critiqued learn
+                        correlations between features. They see columns, not rows. A
+                        <a href="../manifesto.html">whitebox system</a> built from first principles
+                        operates differently—it compares complete observations with a metric that
+                        captures the true geometric relationship.
+                    </p>
+                    <p>
+                        As we <a href="beyond-the-brain.html">move beyond brain-inspired architectures</a>
+                        toward <a href="meaning-of-information.html">physics-grounded intelligence</a>,
+                        this becomes the foundation. The universe computes in full-dimensional spaces.
+                        To build truly intelligent systems, we must honor that geometry.
+                    </p>
+                </section>
+
+                <!-- Series Navigation -->
+                <nav class="article-series" aria-label="Article series navigation">
+                    <h3>Part of the series: Understanding Information</h3>
+                    <ul class="series-list">
+                        <li>
+                            <span class="series-number">01</span>
+                            <a href="black-box-dilemma.html" class="series-title">The Black Box Dilemma</a>
+                        </li>
+                        <li>
+                            <span class="series-number">02</span>
+                            <a href="meaning-of-information.html" class="series-title">The Meaning of Information</a>
+                        </li>
+                        <li>
+                            <span class="series-number">03</span>
+                            <a href="beyond-the-brain.html" class="series-title">Beyond the Brain: Why Mimicking Biology
+                                Won't Lead to AGI</a>
+                        </li>
+                        <li class="series-current">
+                            <span class="series-number">04</span>
+                            <span class="series-title">The Meaning of Non-Linearity</span>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Article Footer -->
+            <footer class="article-footer">
+                <div class="article-tags">
+                    <span class="tag-label">Tags:</span>
+                    <a href="../blogs.html" class="article-tag">Information Geometry</a>
+                    <a href="../blogs.html" class="article-tag">Non-Linearity</a>
+                    <a href="../blogs.html" class="article-tag">Physics-Inspired AI</a>
+                    <a href="../blogs.html" class="article-tag">First Principles</a>
+                </div>
+
+                <div class="article-cta">
+                    <h3>Ready to explore information geometry?</h3>
+                    <p>Learn how Azetta builds AI systems that preserve high-dimensional structure.</p>
+                    <a class="btn btn-primary" href="mailto:contact@azetta.ai">Get in Touch</a>
+                </div>
+
+                <nav class="article-nav" aria-label="Adjacent articles">
+                    <a href="beyond-the-brain.html" class="nav-prev">← Previous Article</a>
+                    <a href="../blogs.html" class="nav-back">Back to Blog</a>
+                </nav>
+            </footer>
+        </article>
+    </main>
+
+    <!-- External Scripts -->
+    <script src="../main.js" defer></script>
+
+    <!-- Interactive Visualizations -->
+    <script src="non-linearity-visualizations.js"></script>
+</body>
+
+</html>

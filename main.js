@@ -8,7 +8,7 @@
 // ============================================
 // FEATURE: Circuit Animation Module
 // ============================================
-const CircuitAnimation = (function() {
+const CircuitAnimation = (function () {
     'use strict';
 
     /**
@@ -34,14 +34,14 @@ const CircuitAnimation = (function() {
         this.linesNo = 50;
         this.linesSize = 20;
         this.lines = [];
-        
+
         this.init();
     }
 
     /**
      * Initialize the circuit animation
      */
-    Signalz.prototype.init = function() {
+    Signalz.prototype.init = function () {
         this.setup();
         for (let i = 0; i < this.linesNo; i++) {
             this.lines.push(new Line(this.center.x, this.center.y));
@@ -52,25 +52,25 @@ const CircuitAnimation = (function() {
     /**
      * Setup canvas dimensions and event listeners
      */
-    Signalz.prototype.setup = function() {
+    Signalz.prototype.setup = function () {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.center.x = Math.round(this.canvas.width / 2);
         this.center.y = Math.round(this.canvas.height / 2);
-        
+
         window.addEventListener('resize', this.onScreenResize.bind(this));
     };
 
     /**
      * Handle screen resize
      */
-    Signalz.prototype.onScreenResize = function() {
+    Signalz.prototype.onScreenResize = function () {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.center.x = Math.round(this.canvas.width / 2);
         this.center.y = Math.round(this.canvas.height / 2);
-        
-        this.lines.forEach(function(line) {
+
+        this.lines.forEach(function (line) {
             line.location.x = this.center.x;
             line.location.y = this.center.y;
         }.bind(this));
@@ -79,7 +79,7 @@ const CircuitAnimation = (function() {
     /**
      * Animation loop
      */
-    Signalz.prototype.animate = function() {
+    Signalz.prototype.animate = function () {
         requestAnimationFrame(this.animate.bind(this));
         this.draw();
     };
@@ -87,28 +87,28 @@ const CircuitAnimation = (function() {
     /**
      * Draw circuit lines
      */
-    Signalz.prototype.draw = function() {
+    Signalz.prototype.draw = function () {
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        
+
         this.drawNo++;
         if (this.drawNo % 2 === 1) {
             return;
         }
-        
+
         for (let idx = 0; idx < this.lines.length; idx++) {
             const line = this.lines[idx];
             const lineSize = this.linesSize;
-            
+
             let dir = ~~(Math.random() * 3) * 90;
             if (idx % 4 === dir / 90) { dir = 270; }
-            
+
             this.ctx.lineWidth = line.width;
             this.ctx.strokeStyle = line.color;
             this.ctx.beginPath();
             this.ctx.moveTo(line.location.x, line.location.y);
-            
-            switch(dir) {
+
+            switch (dir) {
                 case 0:
                     line.location.y -= lineSize;
                     break;
@@ -122,15 +122,15 @@ const CircuitAnimation = (function() {
                     line.location.x -= lineSize;
                     break;
             }
-            
+
             this.ctx.lineTo(line.location.x, line.location.y);
-            
-            if (line.location.x < 0 || line.location.x > this.canvas.width || 
+
+            if (line.location.x < 0 || line.location.x > this.canvas.width ||
                 line.location.y < 0 || line.location.y > this.canvas.height) {
                 line.location.x = this.center.x;
                 line.location.y = this.center.y;
             }
-            
+
             this.ctx.stroke();
         }
     };
@@ -139,7 +139,7 @@ const CircuitAnimation = (function() {
      * Public API
      */
     return {
-        init: function(canvasId) {
+        init: function (canvasId) {
             const canvas = document.getElementById(canvasId);
             if (canvas) {
                 return new Signalz(canvas);
@@ -153,7 +153,7 @@ const CircuitAnimation = (function() {
 // ============================================
 // FEATURE: SVG Animation Module
 // ============================================
-const SVGAnimation = (function() {
+const SVGAnimation = (function () {
     'use strict';
 
     /**
@@ -170,7 +170,7 @@ const SVGAnimation = (function() {
             autoplay: true,
             loop: true,
             direction: 'alternate',
-            loopComplete: function(anim) {
+            loopComplete: function (anim) {
                 setTimeout(() => {
                     anim.play();
                 }, 3000);
@@ -182,7 +182,7 @@ const SVGAnimation = (function() {
             strokeDashoffset: [anime.setDashoffset, 0],
             easing: 'easeInOutSine',
             duration: 2000,
-            delay: function(el, i) {
+            delay: function (el, i) {
                 return i * 50;
             }
         }).add({
@@ -190,7 +190,7 @@ const SVGAnimation = (function() {
             scale: [1, 1.2],
             duration: 1500,
             easing: 'easeInOutQuad',
-            delay: function(el, i) {
+            delay: function (el, i) {
                 return i * 250;
             }
         });
@@ -207,7 +207,7 @@ const SVGAnimation = (function() {
 // ============================================
 // FEATURE: Navigation Controls
 // ============================================
-const Navigation = (function() {
+const Navigation = (function () {
     'use strict';
 
     function closeNav(toggle, nav) {
@@ -251,7 +251,7 @@ const Navigation = (function() {
 // ============================================
 // FEATURE: CTA Button Handlers
 // ============================================
-const CTAHandlers = (function() {
+const CTAHandlers = (function () {
     'use strict';
 
     /**
@@ -307,7 +307,7 @@ const CTAHandlers = (function() {
 // ============================================
 // FEATURE: Analytics & Performance
 // ============================================
-const Analytics = (function() {
+const Analytics = (function () {
     'use strict';
 
     /**
@@ -340,7 +340,7 @@ const Analytics = (function() {
 // ============================================
 // FEATURE: Accessibility Enhancements
 // ============================================
-const Accessibility = (function() {
+const Accessibility = (function () {
     'use strict';
 
     /**
@@ -351,8 +351,8 @@ const Accessibility = (function() {
         nodes.forEach((node, index) => {
             node.setAttribute('tabindex', '0');
             node.setAttribute('role', 'article');
-            
-            node.addEventListener('keydown', function(e) {
+
+            node.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     node.click();
@@ -389,7 +389,7 @@ const Accessibility = (function() {
      */
     function respectReducedMotion() {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        
+
         if (prefersReducedMotion.matches) {
             document.body.classList.add('reduce-motion');
             // Disable animations if user prefers reduced motion
@@ -425,7 +425,7 @@ const Accessibility = (function() {
 // ============================================
 // APP INITIALIZATION
 // ============================================
-const App = (function() {
+const App = (function () {
     'use strict';
 
     /**
@@ -445,29 +445,29 @@ const App = (function() {
      */
     function initModules() {
         console.log('Initializing Azetta.ai...');
-        
+
         // Initialize circuit animation
         CircuitAnimation.init('circuit-canvas');
-        
+
         // Initialize SVG animation (wait for anime.js to load)
         if (typeof anime !== 'undefined') {
             SVGAnimation.init();
         } else {
             console.warn('Anime.js not loaded yet, SVG animations disabled');
         }
-        
+
         // Initialize navigation controls
         Navigation.init();
 
         // Initialize CTA handlers
         CTAHandlers.init();
-        
+
         // Initialize accessibility features
         Accessibility.init();
-        
+
         // Track page view
         Analytics.trackPageView();
-        
+
         console.log('Azetta.ai initialized successfully');
     }
 
