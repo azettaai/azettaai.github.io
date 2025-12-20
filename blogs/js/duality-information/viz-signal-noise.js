@@ -7,8 +7,10 @@ export function initVizSignalNoise() {
     const ctx = canvas.getContext('2d');
     let animationFrame;
     let time = 0;
-    let alignment = 0.8;
+    let alignment = 0.75;
     let isDragging = false;
+    let hoveredButton = null;
+    let hoveredPreset = null;
 
     const hexToRgba = (hex, alpha) => {
         const r = parseInt(hex.slice(1, 3), 16);
@@ -17,8 +19,17 @@ export function initVizSignalNoise() {
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
 
+    // Presets - including New Signals
+    const presets = [
+        { label: '🎲 New', value: -1, icon: '' },
+        { label: 'Identical', value: 1.0, icon: '=' },
+        { label: 'High', value: 0.8, icon: '≈' },
+        { label: 'Medium', value: 0.5, icon: '~' },
+        { label: 'Low', value: 0.15, icon: '≠' }
+    ];
+
     // Two signal vectors
-    const dims = 40;
+    const dims = 32;
     let signalA = normalize(randomVector(dims, 1));
     let signalB;
 
@@ -33,65 +44,76 @@ export function initVizSignalNoise() {
 
     function resize() {
         const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * window.devicePixelRatio;
-        canvas.height = rect.height * window.devicePixelRatio;
-        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     function draw() {
-        const w = canvas.getBoundingClientRect().width;
-        const h = canvas.getBoundingClientRect().height;
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
 
         ctx.clearRect(0, 0, w, h);
 
-        // Background gradient based on coherence
+        // Calculate coherence
         const coherence = Math.abs(dot(signalA, signalB));
-        const bgGrad = ctx.createLinearGradient(0, 0, w, h);
-        bgGrad.addColorStop(0, hexToRgba(COLORS.primary, coherence * 0.05));
-        bgGrad.addColorStop(1, hexToRgba(COLORS.wave, coherence * 0.05));
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, w, h);
+        const yatValue = yat(signalA, signalB);
 
-        // Grid
-        ctx.strokeStyle = COLORS.grid;
+        // Subtle grid
+        ctx.strokeStyle = 'rgba(27, 153, 139, 0.04)';
         ctx.lineWidth = 1;
-        for (let x = 0; x < w; x += 40) {
+        for (let x = 0; x < w; x += 30) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x, h);
             ctx.stroke();
         }
-        for (let y = 0; y < h; y += 40) {
+        for (let y = 0; y < h; y += 30) {
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(w, y);
             ctx.stroke();
         }
 
-        // Waveform display areas
-        const waveHeight = 50;
-        const waveY1 = 85;
-        const waveY2 = 180;
-        const waveX = 80;
-        const waveW = w - 130;
+        // Layout
+        const leftPanel = 70;
+        const rightPanel = 150;
+        const waveArea = { x: leftPanel, y: 50, w: w - leftPanel - rightPanel, h: h - 120 };
 
-        // Draw waveform backgrounds
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-        ctx.fillRect(waveX - 10, waveY1 - waveHeight - 15, waveW + 20, waveHeight * 2 + 30);
-        ctx.fillRect(waveX - 10, waveY2 - waveHeight - 15, waveW + 20, waveHeight * 2 + 30);
+        // Draw waveforms
+        const waveH = (waveArea.h - 40) / 2;
+        const wave1Y = waveArea.y + waveH / 2 + 15;
+        const wave2Y = waveArea.y + waveH + waveH / 2 + 35;
 
-        // Draw Signal A waveform with glow
-        const drawWave = (signal, baseY, color, label) => {
+        const drawWave = (signal, baseY, color, label, secondary = false) => {
+            // Background
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.beginPath();
+            ctx.roundRect(waveArea.x - 5, baseY - waveH / 2 - 20, waveArea.w + 10, waveH + 25, 5);
+            ctx.fill();
+
+            // Zero line
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(waveArea.x, baseY);
+            ctx.lineTo(waveArea.x + waveArea.w, baseY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
             // Glow
-            ctx.strokeStyle = hexToRgba(color, 0.2);
-            ctx.lineWidth = 8;
+            ctx.strokeStyle = hexToRgba(color, 0.25);
+            ctx.lineWidth = 10;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.beginPath();
             for (let i = 0; i < dims; i++) {
-                const x = waveX + (i / (dims - 1)) * waveW;
-                const phase = time * 3 + i * 0.15;
-                const y = baseY + signal[i] * waveHeight * 0.85 + Math.sin(phase) * 2;
+                const x = waveArea.x + (i / (dims - 1)) * waveArea.w;
+                const phase = time * 2.5 + i * 0.1;
+                const y = baseY + signal[i] * (waveH / 2) * 0.85 + Math.sin(phase) * 2;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
@@ -102,179 +124,218 @@ export function initVizSignalNoise() {
             ctx.lineWidth = 2.5;
             ctx.beginPath();
             for (let i = 0; i < dims; i++) {
-                const x = waveX + (i / (dims - 1)) * waveW;
-                const phase = time * 3 + i * 0.15;
-                const y = baseY + signal[i] * waveHeight * 0.85 + Math.sin(phase) * 2;
+                const x = waveArea.x + (i / (dims - 1)) * waveArea.w;
+                const phase = time * 2.5 + i * 0.1;
+                const y = baseY + signal[i] * (waveH / 2) * 0.85 + Math.sin(phase) * 2;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
             ctx.stroke();
 
+            // Points
+            for (let i = 0; i < dims; i += 4) {
+                const x = waveArea.x + (i / (dims - 1)) * waveArea.w;
+                const phase = time * 2.5 + i * 0.1;
+                const y = baseY + signal[i] * (waveH / 2) * 0.85 + Math.sin(phase) * 2;
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
             // Label
             ctx.fillStyle = color;
-            ctx.font = 'bold 11px "Courier New", monospace';
+            ctx.font = 'bold 10px "Courier New", monospace';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
-            ctx.fillText(label, waveX, baseY - waveHeight - 5);
+            ctx.fillText(label, waveArea.x, baseY - waveH / 2 - 8);
         };
 
-        drawWave(signalA, waveY1, COLORS.primary, '〜 Signal A');
-        drawWave(signalB, waveY2, COLORS.wave, '〜 Signal B');
+        drawWave(signalA, wave1Y, COLORS.primary, '〜 Signal A (Reference)');
+        drawWave(signalB, wave2Y, COLORS.wave, '〜 Signal B (Variable)');
 
-        // Calculate metrics
-        const dotProduct = dot(signalA, signalB);
-        const yatValue = yat(signalA, signalB);
-
-        // Coherence meter
-        const meterX = w / 2 - 120;
-        const meterY = h - 95;
-        const meterW = 240;
-        const meterH = 30;
-
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-        ctx.fillRect(meterX - 15, meterY - 40, meterW + 30, meterH + 70);
-
-        const panelGrad = ctx.createLinearGradient(meterX - 15, meterY, meterX + meterW + 15, meterY);
-        panelGrad.addColorStop(0, '#e63946');
-        panelGrad.addColorStop(0.5, COLORS.signal);
-        panelGrad.addColorStop(1, COLORS.primary);
-        ctx.strokeStyle = panelGrad;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(meterX - 15, meterY - 40, meterW + 30, meterH + 70);
-
-        ctx.fillStyle = COLORS.light;
-        ctx.font = 'bold 12px "Courier New", monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('SIGNAL COHERENCE', w / 2, meterY - 22);
-
-        // Meter background with segments
-        ctx.fillStyle = 'rgba(50, 50, 50, 0.9)';
-        ctx.fillRect(meterX, meterY, meterW, meterH);
-
-        // Meter fill with gradient
-        const fillGrad = ctx.createLinearGradient(meterX, 0, meterX + meterW, 0);
-        fillGrad.addColorStop(0, '#e63946');
-        fillGrad.addColorStop(0.35, '#f4a261');
-        fillGrad.addColorStop(0.7, '#2a9d8f');
-        fillGrad.addColorStop(1, COLORS.primary);
-        ctx.fillStyle = fillGrad;
-        ctx.fillRect(meterX, meterY, meterW * coherence, meterH);
-
-        // Meter segments
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.lineWidth = 1;
-        for (let i = 1; i < 10; i++) {
-            const sx = meterX + (i / 10) * meterW;
-            ctx.beginPath();
-            ctx.moveTo(sx, meterY);
-            ctx.lineTo(sx, meterY + meterH);
-            ctx.stroke();
-        }
-
-        // Meter border
-        ctx.strokeStyle = COLORS.light;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(meterX, meterY, meterW, meterH);
-
-        // Coherence indicator needle
-        const needleX = meterX + meterW * coherence;
-        ctx.fillStyle = COLORS.light;
-        ctx.beginPath();
-        ctx.moveTo(needleX, meterY - 5);
-        ctx.lineTo(needleX - 6, meterY - 12);
-        ctx.lineTo(needleX + 6, meterY - 12);
-        ctx.closePath();
-        ctx.fill();
-
-        // Labels
-        ctx.font = '10px "Courier New", monospace';
-        ctx.textAlign = 'left';
-        ctx.fillStyle = '#e63946';
-        ctx.fillText('NOISE', meterX, meterY + meterH + 18);
-        ctx.textAlign = 'right';
-        ctx.fillStyle = COLORS.primary;
-        ctx.fillText('SIGNAL', meterX + meterW, meterY + meterH + 18);
-
-        // Percentage
-        ctx.font = 'bold 16px "Courier New", monospace';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = COLORS.light;
-        ctx.fillText(`${(coherence * 100).toFixed(0)}%`, w / 2, meterY + 22);
-
-        // Yat display
-        const yatX = w - 115;
-        const yatY = 15;
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-        ctx.fillRect(yatX, yatY, 100, 60);
-        ctx.strokeStyle = COLORS.accent;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(yatX, yatY, 100, 60);
-
-        ctx.font = '10px "Courier New", monospace';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = COLORS.dim;
-        ctx.fillText('YAT', yatX + 50, yatY + 18);
-        ctx.font = 'bold 20px "Courier New", monospace';
-        ctx.fillStyle = COLORS.accent;
-        ctx.fillText(isFinite(yatValue) ? yatValue.toFixed(2) : '∞', yatX + 50, yatY + 44);
-
-        // Alignment slider
+        // Alignment slider (left side)
         const sliderX = 30;
-        const sliderY = h / 2 - 90;
-        const sliderH = 180;
+        const sliderY = waveArea.y + 30;
+        const sliderH = waveArea.h - 40;
 
         // Slider background
         ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-        ctx.fillRect(sliderX - 12, sliderY - 25, 40, sliderH + 55);
-        ctx.strokeStyle = COLORS.grid;
+        ctx.beginPath();
+        ctx.roundRect(sliderX - 18, sliderY - 20, 42, sliderH + 50, 5);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.15)';
         ctx.lineWidth = 1;
-        ctx.strokeRect(sliderX - 12, sliderY - 25, 40, sliderH + 55);
+        ctx.stroke();
 
         // Slider label
         ctx.font = 'bold 9px "Courier New", monospace';
         ctx.textAlign = 'center';
         ctx.fillStyle = COLORS.light;
-        ctx.fillText('ALIGN', sliderX + 8, sliderY - 10);
+        ctx.fillText('ALIGN', sliderX + 3, sliderY - 5);
 
-        // Slider track with gradient
-        const trackGrad = ctx.createLinearGradient(0, sliderY, 0, sliderY + sliderH);
+        // Slider track
+        const trackGrad = ctx.createLinearGradient(0, sliderY + 10, 0, sliderY + sliderH);
         trackGrad.addColorStop(0, COLORS.primary);
+        trackGrad.addColorStop(0.5, COLORS.signal);
         trackGrad.addColorStop(1, '#e63946');
         ctx.fillStyle = trackGrad;
-        ctx.fillRect(sliderX + 4, sliderY, 8, sliderH);
-        ctx.strokeStyle = COLORS.dim;
-        ctx.lineWidth = 1;
-        ctx.strokeRect(sliderX + 4, sliderY, 8, sliderH);
+        ctx.beginPath();
+        ctx.roundRect(sliderX, sliderY + 10, 6, sliderH - 10, 3);
+        ctx.fill();
 
         // Slider handle
-        const handleY = sliderY + (1 - alignment) * sliderH;
+        const handleY = sliderY + 10 + (1 - alignment) * (sliderH - 10);
+
+        // Handle glow
+        ctx.fillStyle = hexToRgba(COLORS.accent, 0.3);
+        ctx.beginPath();
+        ctx.arc(sliderX + 3, handleY, 18, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Handle
         ctx.fillStyle = COLORS.accent;
         ctx.beginPath();
-        ctx.arc(sliderX + 8, handleY, 12, 0, Math.PI * 2);
+        ctx.arc(sliderX + 3, handleY, 12, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = COLORS.light;
-        ctx.font = 'bold 10px "Courier New", monospace';
-        ctx.fillText(`${Math.round(alignment * 100)}`, sliderX + 8, handleY + 3);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 9px "Courier New", monospace';
+        ctx.fillText(`${Math.round(alignment * 100)}`, sliderX + 3, handleY + 3);
 
-        // Min/max labels
-        ctx.font = '9px "Courier New", monospace';
+        // Track markers
+        ctx.font = '8px "Courier New", monospace';
         ctx.fillStyle = COLORS.dim;
-        ctx.fillText('100%', sliderX + 8, sliderY + sliderH + 20);
-        ctx.fillText('0%', sliderX + 8, sliderY - 2);
+        ctx.fillText('100', sliderX + 3, sliderY + sliderH + 18);
 
-        time += 0.018;
+        // Right panel
+        const panelX = w - rightPanel + 15;
+        const panelW = rightPanel - 25;
+
+        // Coherence meter
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+        ctx.beginPath();
+        ctx.roundRect(panelX, waveArea.y, panelW, 100, 5);
+        ctx.fill();
+
+        // Meter border gradient based on coherence
+        const meterBorder = ctx.createLinearGradient(panelX, waveArea.y, panelX + panelW, waveArea.y);
+        meterBorder.addColorStop(0, coherence > 0.7 ? COLORS.primary : '#e63946');
+        meterBorder.addColorStop(1, coherence > 0.7 ? COLORS.wave : COLORS.signal);
+        ctx.strokeStyle = meterBorder;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.font = 'bold 10px "Courier New", monospace';
+        ctx.fillStyle = COLORS.dim;
+        ctx.textAlign = 'left';
+        ctx.fillText('COHERENCE', panelX + 10, waveArea.y + 18);
+
+        // Percentage
+        ctx.font = 'bold 28px "Courier New", monospace';
+        ctx.fillStyle = coherence > 0.7 ? COLORS.primary : (coherence > 0.4 ? COLORS.signal : '#e63946');
+        ctx.textAlign = 'center';
+        ctx.fillText(`${(coherence * 100).toFixed(0)}%`, panelX + panelW / 2, waveArea.y + 52);
+
+        // Mini meter bar
+        const miniMeterY = waveArea.y + 70;
+        ctx.fillStyle = 'rgba(50,50,50,0.8)';
+        ctx.beginPath();
+        ctx.roundRect(panelX + 10, miniMeterY, panelW - 20, 8, 4);
+        ctx.fill();
+
+        const meterGrad = ctx.createLinearGradient(panelX + 10, 0, panelX + panelW - 10, 0);
+        meterGrad.addColorStop(0, '#e63946');
+        meterGrad.addColorStop(0.5, COLORS.signal);
+        meterGrad.addColorStop(1, COLORS.primary);
+        ctx.fillStyle = meterGrad;
+        ctx.beginPath();
+        ctx.roundRect(panelX + 10, miniMeterY, (panelW - 20) * coherence, 8, 4);
+        ctx.fill();
+
+        // Status label
+        const status = coherence > 0.9 ? 'SYNCHRONIZED' :
+            coherence > 0.7 ? 'HIGH MATCH' :
+                coherence > 0.4 ? 'PARTIAL' :
+                    coherence > 0.2 ? 'LOW MATCH' : 'NOISE';
+        ctx.font = '9px "Courier New", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = coherence > 0.7 ? COLORS.primary : (coherence > 0.4 ? COLORS.signal : '#e63946');
+        ctx.fillText(status, panelX + panelW / 2, waveArea.y + 92);
+
+        // Yat display
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+        ctx.beginPath();
+        ctx.roundRect(panelX, waveArea.y + 115, panelW, 65, 5);
+        ctx.fill();
+        ctx.strokeStyle = COLORS.accent;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.font = 'bold 10px "Courier New", monospace';
+        ctx.fillStyle = COLORS.dim;
+        ctx.textAlign = 'left';
+        ctx.fillText('YAT VALUE', panelX + 10, waveArea.y + 133);
+
+        ctx.font = 'bold 22px "Courier New", monospace';
+        ctx.fillStyle = COLORS.accent;
+        ctx.textAlign = 'center';
+        ctx.fillText(isFinite(yatValue) ? yatValue.toFixed(2) : '∞', panelX + panelW / 2, waveArea.y + 162);
+
+        // Presets (compact)
+        const presetY = waveArea.y + 195;
+        const presetH = 22;
+        const presetGap = 3;
+
+        ctx.font = 'bold 9px "Courier New", monospace';
+        ctx.fillStyle = COLORS.dim;
+        ctx.textAlign = 'left';
+        ctx.fillText('PRESETS', panelX + 10, presetY - 8);
+
+        for (let i = 0; i < presets.length; i++) {
+            const y = presetY + i * (presetH + presetGap);
+            const isHovered = hoveredPreset === i;
+            const isActive = Math.abs(alignment - presets[i].value) < 0.05;
+
+            ctx.fillStyle = isActive ? hexToRgba(COLORS.primary, 0.35) : (isHovered ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.6)');
+            ctx.beginPath();
+            ctx.roundRect(panelX, y, panelW, presetH, 4);
+            ctx.fill();
+
+            ctx.strokeStyle = isActive ? COLORS.primary : (isHovered ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)');
+            ctx.lineWidth = isActive ? 2 : 1;
+            ctx.stroke();
+
+            ctx.font = '10px "Courier New", monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = isActive ? COLORS.light : (isHovered ? COLORS.light : COLORS.dim);
+            ctx.fillText(`${presets[i].icon} ${presets[i].label}`, panelX + panelW / 2, y + presetH / 2);
+        }
+
+        time += 0.02;
         animationFrame = requestAnimationFrame(draw);
     }
 
-    function handleDrag(e) {
+    function getLayout() {
         const rect = canvas.getBoundingClientRect();
+        const w = rect.width;
         const h = rect.height;
+        const leftPanel = 70;
+        const rightPanel = 150;
+        const waveArea = { x: leftPanel, y: 50, w: w - leftPanel - rightPanel, h: h - 120 };
+        const sliderY = waveArea.y + 30;
+        const sliderH = waveArea.h - 40;
+        const panelX = w - rightPanel + 15;
+        const panelW = rightPanel - 25;
+        return { w, h, waveArea, sliderY, sliderH, panelX, panelW };
+    }
+
+    function handleDrag(e) {
+        const { sliderY, sliderH } = getLayout();
+        const rect = canvas.getBoundingClientRect();
         const y = e.clientY - rect.top;
 
-        const sliderY = h / 2 - 90;
-        const sliderH = 180;
-
-        const newAlignment = 1 - Math.max(0, Math.min(1, (y - sliderY) / sliderH));
+        const newAlignment = 1 - Math.max(0, Math.min(1, (y - sliderY - 10) / (sliderH - 10)));
         if (Math.abs(newAlignment - alignment) > 0.005) {
             alignment = newAlignment;
             generateSignalB();
@@ -292,23 +353,77 @@ export function initVizSignalNoise() {
     });
 
     canvas.addEventListener('mousemove', (e) => {
-        if (isDragging) handleDrag(e);
-
         const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        canvas.style.cursor = x < 70 ? 'ns-resize' : 'crosshair';
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const { waveArea, panelX, panelW } = getLayout();
+
+        if (isDragging) {
+            handleDrag(e);
+            canvas.style.cursor = 'grabbing';
+            return;
+        }
+
+        hoveredButton = null;
+        hoveredPreset = null;
+
+        // Check slider area
+        if (mouseX < 70) {
+            canvas.style.cursor = 'grab';
+            return;
+        }
+
+        // Check presets
+        const presetY = waveArea.y + 195;
+        const presetH = 22;
+        const presetGap = 3;
+
+        for (let i = 0; i < presets.length; i++) {
+            const y = presetY + i * (presetH + presetGap);
+            if (mouseX >= panelX && mouseX <= panelX + panelW && mouseY >= y && mouseY <= y + presetH) {
+                hoveredPreset = i;
+                canvas.style.cursor = 'pointer';
+                return;
+            }
+        }
+
+        canvas.style.cursor = 'default';
     });
 
-    canvas.addEventListener('mouseup', () => isDragging = false);
-    canvas.addEventListener('mouseleave', () => isDragging = false);
+    canvas.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        isDragging = false;
+        hoveredButton = null;
+        hoveredPreset = null;
+        canvas.style.cursor = 'default';
+    });
 
     canvas.addEventListener('click', (e) => {
         const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const { waveArea, panelX, panelW } = getLayout();
 
-        if (x > 70) {
-            signalA = normalize(randomVector(dims, 1));
-            generateSignalB();
+        // Check presets
+        const presetY = waveArea.y + 195;
+        const presetH = 22;
+        const presetGap = 3;
+
+        for (let i = 0; i < presets.length; i++) {
+            const y = presetY + i * (presetH + presetGap);
+            if (mouseX >= panelX && mouseX <= panelX + panelW && mouseY >= y && mouseY <= y + presetH) {
+                if (presets[i].value < 0) {
+                    // New signals
+                    signalA = normalize(randomVector(dims, 1));
+                } else {
+                    alignment = presets[i].value;
+                }
+                generateSignalB();
+                return;
+            }
         }
     });
 
