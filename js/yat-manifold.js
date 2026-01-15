@@ -1,7 +1,7 @@
 /**
  * YAT Manifold Visualization
  * A 3D curved surface showing how the YAT metric creates gravity-well-like
- * deformations in representation space.
+ * deformations in representation space. Supports multiple neurons.
  * 
  * ⵟ(x,w) = (x·w)² / ||x-w||² + ε
  */
@@ -14,8 +14,11 @@
     let rotationAngle = 0.5;
     let tiltAngle = 0.6;
 
-    // Anchor vector (the "mass" bending spacetime)
-    let anchorVec = { x: 80, y: 60 };
+    // Multiple neurons (masses bending spacetime)
+    const neuronColors = ['#4ff975', '#4deeea', '#f9d71c', '#f038ff', '#ed217c'];
+    let neurons = [
+        { x: 80, y: 60, color: neuronColors[0] }
+    ];
 
     function resize() {
         const rect = canvas.getBoundingClientRect();
@@ -26,15 +29,21 @@
         ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
-    // ⵟ = (x·w)² / ||x-w||²
-    function computeYat(pointX, pointY) {
-        const ax = anchorVec.x, ay = anchorVec.y;
-        const dotProduct = ax * pointX + ay * pointY;
-        const dx = pointX - ax, dy = pointY - ay;
-        const distanceSquared = dx * dx + dy * dy;
-        if (distanceSquared < 0.01) return Math.log(1 + 200);
-        const yat = (dotProduct * dotProduct) / distanceSquared;
-        return Math.log(1 + yat);
+    // Compute combined YAT from all neurons
+    // ⵟ = Σ (x·w_i)² / ||x-w_i||²
+    function computeTotalYat(pointX, pointY) {
+        let totalYat = 0;
+        for (const n of neurons) {
+            const dotProduct = n.x * pointX + n.y * pointY;
+            const dx = pointX - n.x, dy = pointY - n.y;
+            const distanceSquared = dx * dx + dy * dy;
+            if (distanceSquared < 0.01) {
+                totalYat += 200;
+            } else {
+                totalYat += (dotProduct * dotProduct) / distanceSquared;
+            }
+        }
+        return Math.log(1 + totalYat);
     }
 
     // Isometric 3D projection
@@ -44,6 +53,13 @@
         const rx = x * cosR - y * sinR;
         const ry = x * sinR + y * cosR;
         return { x: rx, y: ry * tiltAngle + z };
+    }
+
+    function hexToRgba(hex, alpha) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
     }
 
     function draw() {
@@ -62,7 +78,7 @@
             for (let j = 0; j <= gridRes; j++) {
                 const worldX = (j - gridRes / 2) * spacing;
                 const worldY = (i - gridRes / 2) * spacing;
-                const yat = computeYat(worldX, worldY);
+                const yat = computeTotalYat(worldX, worldY);
                 yatGrid[i][j] = yat;
                 if (yat > maxYat) maxYat = yat;
             }
@@ -116,50 +132,59 @@
             ctx.stroke();
         }
 
-        // Draw anchor at bottom of well
-        const anchorDepth = Math.min(computeYat(anchorVec.x, anchorVec.y) * wellDepth, 100);
-        const anchorScreen = project(anchorVec.x, anchorVec.y, anchorDepth);
+        // Draw all neurons at bottom of their wells
+        for (let idx = 0; idx < neurons.length; idx++) {
+            const n = neurons[idx];
 
-        // Glow
-        const grad = ctx.createRadialGradient(
-            cx + anchorScreen.x, cy + anchorScreen.y, 0,
-            cx + anchorScreen.x, cy + anchorScreen.y, 20
-        );
-        grad.addColorStop(0, 'rgba(79, 249, 117, 0.9)');
-        grad.addColorStop(0.5, 'rgba(79, 249, 117, 0.3)');
-        grad.addColorStop(1, 'transparent');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(cx + anchorScreen.x, cy + anchorScreen.y, 20, 0, Math.PI * 2);
-        ctx.fill();
+            // Compute single neuron contribution for depth
+            const dotP = n.x * n.x + n.y * n.y;
+            const neuronDepth = Math.min(Math.log(1 + dotP * 10) * wellDepth, 100);
+            const neuronScreen = project(n.x, n.y, neuronDepth);
 
-        // Anchor point
-        ctx.beginPath();
-        ctx.arc(cx + anchorScreen.x, cy + anchorScreen.y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#4ff975';
-        ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+            // Glow
+            const grad = ctx.createRadialGradient(
+                cx + neuronScreen.x, cy + neuronScreen.y, 0,
+                cx + neuronScreen.x, cy + neuronScreen.y, 18
+            );
+            grad.addColorStop(0, hexToRgba(n.color, 0.9));
+            grad.addColorStop(0.5, hexToRgba(n.color, 0.3));
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(cx + neuronScreen.x, cy + neuronScreen.y, 18, 0, Math.PI * 2);
+            ctx.fill();
 
-        // Label
-        ctx.font = '8px monospace';
-        ctx.fillStyle = 'rgba(79, 249, 117, 0.7)';
-        ctx.textAlign = 'center';
-        ctx.fillText('w', cx + anchorScreen.x, cy + anchorScreen.y + 16);
+            // Neuron point
+            ctx.beginPath();
+            ctx.arc(cx + neuronScreen.x, cy + neuronScreen.y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = n.color;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
 
-        // Formula
+            // Label
+            ctx.font = '8px monospace';
+            ctx.fillStyle = hexToRgba(n.color, 0.8);
+            ctx.textAlign = 'center';
+            ctx.fillText('w' + (idx + 1), cx + neuronScreen.x, cy + neuronScreen.y + 14);
+        }
+
+        // Formula and neuron count
         ctx.font = '9px monospace';
         ctx.fillStyle = 'rgba(79, 249, 117, 0.6)';
         ctx.textAlign = 'left';
-        ctx.fillText('ⵟ = (x·w)² / ||x-w||²', 10, h - 10);
+        ctx.fillText('ⵟ = Σ (x·wᵢ)² / ||x-wᵢ||²', 10, h - 10);
+
+        ctx.textAlign = 'right';
+        ctx.fillText(`neurons: ${neurons.length}/5`, w - 10, h - 10);
 
         // Auto-rotate
         rotationAngle += 0.003;
         requestAnimationFrame(draw);
     }
 
-    // Click to move anchor
+    // Click to add/remove neurons
     canvas.addEventListener('click', (e) => {
         const rect = canvas.getBoundingClientRect();
         const mx = e.clientX - rect.left - w / 2;
@@ -168,8 +193,27 @@
         const sinR = Math.sin(-rotationAngle);
         const worldX = mx * cosR - (my / tiltAngle) * sinR;
         const worldY = mx * sinR + (my / tiltAngle) * cosR;
-        anchorVec.x = Math.max(-120, Math.min(120, worldX));
-        anchorVec.y = Math.max(-120, Math.min(120, worldY));
+
+        // Check if clicking on existing neuron to remove
+        for (let i = 0; i < neurons.length; i++) {
+            const dx = neurons[i].x - worldX;
+            const dy = neurons[i].y - worldY;
+            if (Math.sqrt(dx * dx + dy * dy) < 20 && neurons.length > 1) {
+                neurons.splice(i, 1);
+                return;
+            }
+        }
+
+        // Add new neuron if under limit
+        if (neurons.length < 5) {
+            const clampedX = Math.max(-120, Math.min(120, worldX));
+            const clampedY = Math.max(-120, Math.min(120, worldY));
+            neurons.push({
+                x: clampedX,
+                y: clampedY,
+                color: neuronColors[neurons.length % neuronColors.length]
+            });
+        }
     });
 
     window.addEventListener('resize', resize);
