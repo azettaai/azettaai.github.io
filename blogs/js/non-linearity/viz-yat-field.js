@@ -10,8 +10,11 @@ export function initVizYatField() {
         let autoRotate = false;
         let autoRotateId = null;
 
-        // Anchor vector (this is the "mass" bending spacetime)
-        let anchorVec = { x: 80, y: 60 };
+        // Multiple neurons (masses bending spacetime)
+        const neuronColors = ['#e67ea3', '#1b998b', '#f9d71c', '#9b5de5', '#4deeea'];
+        let neurons = [
+            { x: 80, y: 60, color: neuronColors[0] }
+        ];
 
         function resizeField() {
             const rect = canvasField.getBoundingClientRect();
@@ -20,26 +23,27 @@ export function initVizYatField() {
             ctxField.scale(window.devicePixelRatio, window.devicePixelRatio);
         }
 
-        // Yat = (x·y)² / ||x-y||²
-        // Using log(1 + yat) to dampen for visualization
-        function computeYat(pointX, pointY) {
-            const ax = anchorVec.x, ay = anchorVec.y;
-            const px = pointX, py = pointY;
-
-            // Dot product: x · y
-            const dotProduct = ax * px + ay * py;
-
-            // Distance squared: ||x - y||²
-            const dx = px - ax;
-            const dy = py - ay;
+        // Compute YAT for a single neuron
+        function computeSingleYat(pointX, pointY, neuron) {
+            const dotProduct = neuron.x * pointX + neuron.y * pointY;
+            const dx = pointX - neuron.x, dy = pointY - neuron.y;
             const distanceSquared = dx * dx + dy * dy;
+            if (distanceSquared < 0.01) return 200;
+            return (dotProduct * dotProduct) / distanceSquared;
+        }
 
-            // Avoid division by zero
-            if (distanceSquared < 0.01) return Math.log(1 + 200);
-
-            // Yat = (dot)² / dist², then log transform
-            const yat = (dotProduct * dotProduct) / distanceSquared;
-            return Math.log(1 + yat);
+        // Find dominant neuron at a point (returns index and total yat)
+        function getDominantNeuron(pointX, pointY) {
+            let maxYat = 0, dominantIdx = 0, totalYat = 0;
+            for (let i = 0; i < neurons.length; i++) {
+                const yat = computeSingleYat(pointX, pointY, neurons[i]);
+                totalYat += yat;
+                if (yat > maxYat) {
+                    maxYat = yat;
+                    dominantIdx = i;
+                }
+            }
+            return { idx: dominantIdx, total: Math.log(1 + totalYat), max: maxYat };
         }
 
         // Isometric 3D projection with zoom
@@ -58,6 +62,13 @@ export function initVizYatField() {
             return { x: screenX, y: screenY };
         }
 
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r},${g},${b},${alpha})`;
+        }
+
         // Hover state
         let hoverPoint = null;
 
@@ -71,20 +82,19 @@ export function initVizYatField() {
 
             // Manifold grid parameters
             const gridRes = 30;
-            const baseSpacing = 12;
-            const spacing = baseSpacing;
+            const spacing = 12;
 
-            // First pass: compute all Yat values to find max for adaptive scaling
+            // Compute grid data with dominant neuron info
             let maxYat = 0.01;
-            const yatGrid = [];
+            const gridData = [];
             for (let i = 0; i <= gridRes; i++) {
-                yatGrid[i] = [];
+                gridData[i] = [];
                 for (let j = 0; j <= gridRes; j++) {
                     const worldX = (j - gridRes / 2) * spacing;
                     const worldY = (i - gridRes / 2) * spacing;
-                    const yat = computeYat(worldX, worldY);
-                    yatGrid[i][j] = yat;
-                    if (yat > maxYat) maxYat = yat;
+                    const result = getDominantNeuron(worldX, worldY);
+                    gridData[i][j] = { worldX, worldY, ...result };
+                    if (result.total > maxYat) maxYat = result.total;
                 }
             }
 
@@ -92,129 +102,126 @@ export function initVizYatField() {
             const targetMaxDepth = 80;
             const wellDepth = targetMaxDepth / Math.max(maxYat, 0.1);
 
-            // Build the height map using pre-computed Yat values
+            // Build height map with colors
             const heights = [];
             for (let i = 0; i <= gridRes; i++) {
                 heights[i] = [];
                 for (let j = 0; j <= gridRes; j++) {
-                    const worldX = (j - gridRes / 2) * spacing;
-                    const worldY = (i - gridRes / 2) * spacing;
-                    const yat = yatGrid[i][j];
-                    const depth = Math.min(yat * wellDepth, 120);
-
+                    const gd = gridData[i][j];
+                    const depth = Math.min(gd.total * wellDepth, 120);
                     heights[i][j] = {
-                        worldX, worldY, depth,
-                        yat: yat
+                        worldX: gd.worldX,
+                        worldY: gd.worldY,
+                        depth,
+                        color: neurons[gd.idx].color,
+                        intensity: Math.min(depth / 80, 1)
                     };
                 }
             }
 
-            // Draw grid lines that follow the curved surface
-            // Horizontal lines (rows)
+            // Draw horizontal grid lines with per-segment coloring
             for (let i = 0; i <= gridRes; i++) {
-                ctxField.beginPath();
-                let maxDepth = 0;
+                for (let j = 0; j < gridRes; j++) {
+                    const h1 = heights[i][j];
+                    const h2 = heights[i][j + 1];
+                    const p1 = project(h1.worldX, h1.worldY, h1.depth);
+                    const p2 = project(h2.worldX, h2.worldY, h2.depth);
 
-                for (let j = 0; j <= gridRes; j++) {
-                    const h = heights[i][j];
-                    const p = project(h.worldX, h.worldY, h.depth);
+                    // Use the color of the point with higher intensity
+                    const color = h1.intensity >= h2.intensity ? h1.color : h2.color;
+                    const intensity = Math.max(h1.intensity, h2.intensity);
 
-                    if (j === 0) {
-                        ctxField.moveTo(cx + p.x, cy + p.y);
-                    } else {
-                        ctxField.lineTo(cx + p.x, cy + p.y);
-                    }
-                    maxDepth = Math.max(maxDepth, h.depth);
+                    ctxField.beginPath();
+                    ctxField.moveTo(cx + p1.x, cy + p1.y);
+                    ctxField.lineTo(cx + p2.x, cy + p2.y);
+                    ctxField.strokeStyle = hexToRgba(color, 0.3 + intensity * 0.5);
+                    ctxField.lineWidth = 1;
+                    ctxField.stroke();
                 }
-
-                const intensity = Math.min(maxDepth / 80, 1);
-                const hue = 175 - intensity * 20;
-                const light = 30 + intensity * 25;
-                ctxField.strokeStyle = `hsla(${hue}, 60%, ${light}%, ${0.4 + intensity * 0.3})`;
-                ctxField.lineWidth = 1;
-                ctxField.stroke();
             }
 
-            // Vertical lines (columns)
+            // Draw vertical grid lines with per-segment coloring
             for (let j = 0; j <= gridRes; j++) {
-                ctxField.beginPath();
-                let maxDepth = 0;
+                for (let i = 0; i < gridRes; i++) {
+                    const h1 = heights[i][j];
+                    const h2 = heights[i + 1][j];
+                    const p1 = project(h1.worldX, h1.worldY, h1.depth);
+                    const p2 = project(h2.worldX, h2.worldY, h2.depth);
 
-                for (let i = 0; i <= gridRes; i++) {
-                    const h = heights[i][j];
-                    const p = project(h.worldX, h.worldY, h.depth);
+                    const color = h1.intensity >= h2.intensity ? h1.color : h2.color;
+                    const intensity = Math.max(h1.intensity, h2.intensity);
 
-                    if (i === 0) {
-                        ctxField.moveTo(cx + p.x, cy + p.y);
-                    } else {
-                        ctxField.lineTo(cx + p.x, cy + p.y);
-                    }
-                    maxDepth = Math.max(maxDepth, h.depth);
+                    ctxField.beginPath();
+                    ctxField.moveTo(cx + p1.x, cy + p1.y);
+                    ctxField.lineTo(cx + p2.x, cy + p2.y);
+                    ctxField.strokeStyle = hexToRgba(color, 0.3 + intensity * 0.5);
+                    ctxField.lineWidth = 1;
+                    ctxField.stroke();
                 }
-
-                const intensity = Math.min(maxDepth / 80, 1);
-                const hue = 175 - intensity * 20;
-                const light = 30 + intensity * 25;
-                ctxField.strokeStyle = `hsla(${hue}, 60%, ${light}%, ${0.4 + intensity * 0.3})`;
-                ctxField.lineWidth = 1;
-                ctxField.stroke();
             }
 
-            // Draw the anchor at the bottom of its well
-            const anchorDepth = Math.min(computeYat(anchorVec.x, anchorVec.y) * wellDepth, 120);
-            const anchorScreen = project(anchorVec.x, anchorVec.y, anchorDepth);
+            // Draw all neurons at bottom of their wells
+            for (let idx = 0; idx < neurons.length; idx++) {
+                const n = neurons[idx];
+                const dotP = n.x * n.x + n.y * n.y;
+                const neuronDepth = Math.min(Math.log(1 + dotP * 10) * wellDepth, 120);
+                const neuronScreen = project(n.x, n.y, neuronDepth);
 
-            // Glow
-            const grad = ctxField.createRadialGradient(
-                cx + anchorScreen.x, cy + anchorScreen.y, 0,
-                cx + anchorScreen.x, cy + anchorScreen.y, 25
-            );
-            grad.addColorStop(0, 'rgba(230, 126, 163, 0.9)');
-            grad.addColorStop(0.5, 'rgba(230, 126, 163, 0.4)');
-            grad.addColorStop(1, 'rgba(230, 126, 163, 0)');
-            ctxField.beginPath();
-            ctxField.arc(cx + anchorScreen.x, cy + anchorScreen.y, 25, 0, Math.PI * 2);
-            ctxField.fillStyle = grad;
-            ctxField.fill();
+                // Glow
+                const grad = ctxField.createRadialGradient(
+                    cx + neuronScreen.x, cy + neuronScreen.y, 0,
+                    cx + neuronScreen.x, cy + neuronScreen.y, 25
+                );
+                grad.addColorStop(0, hexToRgba(n.color, 0.9));
+                grad.addColorStop(0.5, hexToRgba(n.color, 0.4));
+                grad.addColorStop(1, 'transparent');
+                ctxField.beginPath();
+                ctxField.arc(cx + neuronScreen.x, cy + neuronScreen.y, 25, 0, Math.PI * 2);
+                ctxField.fillStyle = grad;
+                ctxField.fill();
 
-            // Anchor point
-            ctxField.beginPath();
-            ctxField.arc(cx + anchorScreen.x, cy + anchorScreen.y, 5, 0, Math.PI * 2);
-            ctxField.fillStyle = '#e67ea3';
-            ctxField.fill();
-            ctxField.strokeStyle = '#fff';
-            ctxField.lineWidth = 2;
-            ctxField.stroke();
+                // Neuron point
+                ctxField.beginPath();
+                ctxField.arc(cx + neuronScreen.x, cy + neuronScreen.y, 5, 0, Math.PI * 2);
+                ctxField.fillStyle = n.color;
+                ctxField.fill();
+                ctxField.strokeStyle = '#fff';
+                ctxField.lineWidth = 2;
+                ctxField.stroke();
+
+                // Label
+                ctxField.font = '9px "Courier New", monospace';
+                ctxField.fillStyle = hexToRgba(n.color, 0.9);
+                ctxField.textAlign = 'center';
+                ctxField.fillText('w' + (idx + 1), cx + neuronScreen.x, cy + neuronScreen.y + 18);
+            }
 
             // Legend
             ctxField.fillStyle = 'rgba(0,0,0,0.75)';
-            ctxField.fillRect(12, 12, 200, 55);
+            ctxField.fillRect(12, 12, 220, 55);
             ctxField.strokeStyle = 'rgba(255,255,255,0.2)';
-            ctxField.strokeRect(12, 12, 200, 55);
+            ctxField.strokeRect(12, 12, 220, 55);
 
             ctxField.font = 'bold 11px "Courier New", monospace';
             ctxField.fillStyle = '#e67ea3';
-            ctxField.fillText('Yat = (x·y)² / ||x-y||²', 22, 30);
+            ctxField.textAlign = 'left';
+            ctxField.fillText('Yat = Σ (x·wᵢ)² / ||x-wᵢ||²', 22, 30);
             ctxField.font = '10px "Courier New", monospace';
             ctxField.fillStyle = '#aaa';
-            ctxField.fillText('High Yat → gravity well (linear)', 22, 45);
-            ctxField.fillText('Low Yat → flat space (independent)', 22, 58);
+            ctxField.fillText('Click to add neurons (up to 5)', 22, 45);
+            ctxField.fillText(`Neurons: ${neurons.length}/5`, 22, 58);
 
             // Draw hover info if we have a hover point
             if (hoverPoint) {
                 const hx = hoverPoint.worldX;
                 const hy = hoverPoint.worldY;
 
-                // Calculate raw Yat (before log)
-                const ax = anchorVec.x, ay = anchorVec.y;
-                const dotP = ax * hx + ay * hy;
-                const dxx = hx - ax, dyy = hy - ay;
-                const distSq = dxx * dxx + dyy * dyy;
-                const rawYat = distSq < 0.01 ? 999 : (dotP * dotP) / distSq;
-                const logYat = Math.log(1 + rawYat);
+                // Calculate combined Yat
+                const result = getDominantNeuron(hx, hy);
+                const rawTotal = Math.exp(result.total) - 1;
 
                 // Draw hover point marker
-                const hp = project(hx, hy, logYat * wellDepth);
+                const hp = project(hx, hy, result.total * wellDepth);
                 ctxField.beginPath();
                 ctxField.arc(cx + hp.x, cy + hp.y, 4, 0, Math.PI * 2);
                 ctxField.fillStyle = '#fff';
@@ -224,20 +231,21 @@ export function initVizYatField() {
                 const tooltipX = w - 180;
                 ctxField.fillStyle = 'rgba(0,0,0,0.85)';
                 ctxField.fillRect(tooltipX, 12, 168, 70);
-                ctxField.strokeStyle = '#e67ea3';
+                ctxField.strokeStyle = neurons[result.idx].color;
                 ctxField.lineWidth = 1;
                 ctxField.strokeRect(tooltipX, 12, 168, 70);
 
                 ctxField.font = 'bold 10px "Courier New", monospace';
-                ctxField.fillStyle = '#1b998b';
-                ctxField.fillText('HOVER POINT', tooltipX + 10, 28);
+                ctxField.fillStyle = neurons[result.idx].color;
+                ctxField.textAlign = 'left';
+                ctxField.fillText(`DOMINANT: w${result.idx + 1}`, tooltipX + 10, 28);
 
                 ctxField.font = '10px "Courier New", monospace';
                 ctxField.fillStyle = '#ddd';
                 ctxField.fillText(`Position: (${hx.toFixed(0)}, ${hy.toFixed(0)})`, tooltipX + 10, 44);
-                ctxField.fillText(`Yat: ${rawYat.toFixed(2)}`, tooltipX + 10, 58);
+                ctxField.fillText(`Total Yat: ${rawTotal.toFixed(2)}`, tooltipX + 10, 58);
                 ctxField.fillStyle = '#888';
-                ctxField.fillText(`log(1+Yat): ${logYat.toFixed(3)}`, tooltipX + 10, 72);
+                ctxField.fillText(`log(1+Yat): ${result.total.toFixed(3)}`, tooltipX + 10, 72);
             }
         }
 
@@ -272,7 +280,7 @@ export function initVizYatField() {
             drawManifold();
         });
 
-        // Click to move anchor
+        // Click to add/remove neurons
         canvasField.addEventListener('click', (e) => {
             const rect = canvasField.getBoundingClientRect();
             const mx = (e.clientX - rect.left - rect.width / 2) / zoomLevel;
@@ -284,8 +292,27 @@ export function initVizYatField() {
             const worldX = mx * cosR - (my / tiltAngle) * sinR;
             const worldY = mx * sinR + (my / tiltAngle) * cosR;
 
-            anchorVec.x = Math.max(-150, Math.min(150, worldX));
-            anchorVec.y = Math.max(-150, Math.min(150, worldY));
+            // Check if clicking on existing neuron to remove
+            for (let i = 0; i < neurons.length; i++) {
+                const dx = neurons[i].x - worldX;
+                const dy = neurons[i].y - worldY;
+                if (Math.sqrt(dx * dx + dy * dy) < 25 && neurons.length > 1) {
+                    neurons.splice(i, 1);
+                    drawManifold();
+                    return;
+                }
+            }
+
+            // Add new neuron if under limit
+            if (neurons.length < 5) {
+                const clampedX = Math.max(-150, Math.min(150, worldX));
+                const clampedY = Math.max(-150, Math.min(150, worldY));
+                neurons.push({
+                    x: clampedX,
+                    y: clampedY,
+                    color: neuronColors[neurons.length % neuronColors.length]
+                });
+            }
             drawManifold();
         });
 
@@ -317,7 +344,7 @@ export function initVizYatField() {
         document.getElementById('viz-reset')?.addEventListener('click', () => {
             rotationAngle = 0.5;
             zoomLevel = 1.0;
-            anchorVec = { x: 80, y: 60 };
+            neurons = [{ x: 80, y: 60, color: neuronColors[0] }];
             if (autoRotate) {
                 autoRotate = false;
                 if (autoRotateId) cancelAnimationFrame(autoRotateId);
