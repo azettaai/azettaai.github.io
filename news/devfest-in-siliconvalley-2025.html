@@ -63,32 +63,7 @@
 </head>
 
 <body>
-  <header class="site-header" aria-label="Primary navigation">
-    <div class="nav-container">
-      <a class="brand-mark" href="../index.html#hero" aria-label="Azetta.ai home">
-        <span>Azetta.ai</span><span class="brand-accent"></span>
-      </a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="nav-toggle-line"></span>
-        <span class="nav-toggle-line"></span>
-        <span class="nav-toggle-line"></span>
-      </button>
-      <nav class="primary-nav" id="primary-navigation">
-        <ul class="nav-list">
-          <li><a href="../index.html#hero">Overview</a></li>
-          <li><a href="../index.html#connect">Contact</a></li>
-          <li><a href="../manifesto.html">Manifesto</a></li>
-          <li><a href="../blogs.html">Blog</a></li>
-          <li><a href="../news.html" class="active">Newsroom</a></li>
-        </ul>
-        <div class="nav-cta">
-          <a class="btn btn-primary" href="mailto:contact@azetta.ai?subject=Join%20the%20Azetta%20waitlist">Join
-            Waitlist</a>
-        </div>
-      </nav>
-    </div>
-  </header>
+  <div id="site-header" data-active="newsroom" data-prefix=".."></div>
 
   <main>
     <article class="blog-article">
@@ -161,6 +136,7 @@
     </article>
   </main>
 
+  <script src="../js/components.js"></script>
   <script src="../main.js" defer></script>
 </body>
 

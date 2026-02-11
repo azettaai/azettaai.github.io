@@ -148,6 +148,12 @@
     color: #f4a261;
 }
 
+.type-badge.paper {
+    background: rgba(237, 33, 124, 0.12);
+    border-color: rgba(237, 33, 124, 0.35);
+    color: #ed217c;
+}
+
 /* List View */
 .listing-grid.list-view {
     display: flex;
