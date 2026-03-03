@@ -1423,6 +1423,65 @@ tr:hover td { background: rgba(120, 196, 164, 0.04); }
   }
 }
 
+/* ── Research Link Cards (Slide 8) ──────────────────────────────────── */
+.research-link-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.55rem 0.65rem;
+  background: rgba(120,196,164,0.04);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--primary);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.research-link-card:hover {
+  background: rgba(120,196,164,0.09);
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+.research-link-card--lib {
+  background: rgba(90,181,200,0.04);
+  border-top-color: var(--secondary);
+}
+.research-link-card--lib:hover {
+  background: rgba(90,181,200,0.09);
+  border-color: var(--secondary);
+  box-shadow: 0 0 10px var(--secondary-glow);
+}
+.rlc-venue {
+  font-family: 'Chakra Petch', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.research-link-card--lib .rlc-venue { color: var(--secondary); }
+.rlc-title {
+  font-family: 'Chakra Petch', monospace;
+  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+.research-link-card--lib .rlc-title { color: var(--secondary); }
+.rlc-desc {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  flex: 1;
+}
+.rlc-cta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--primary);
+  margin-top: 0.15rem;
+}
+.research-link-card--lib .rlc-cta { color: var(--secondary); }
+
 /* ── Rotate Prompt — shown in portrait on mobile ─────────────────────── */
 #rotate-prompt {
   display: none;
