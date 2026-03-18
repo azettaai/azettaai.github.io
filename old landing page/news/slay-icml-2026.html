@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C8V5SB2QZY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-C8V5SB2QZY');
+    document.addEventListener('DOMContentLoaded', function () {
+      gtag('event', 'article_view', { 'event_category': 'content', 'event_label': document.title });
+      document.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          gtag('event', 'link_click', { 'event_category': 'engagement', 'event_label': this.textContent.trim().substring(0, 50) });
+        });
+      });
+      var scrollDepths = [25, 50, 75, 100], scrolledDepths = [];
+      window.addEventListener('scroll', function () {
+        var scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+        scrollDepths.forEach(function (depth) {
+          if (scrollPercent >= depth && scrolledDepths.indexOf(depth) === -1) {
+            scrolledDepths.push(depth);
+            gtag('event', 'article_read_progress', { 'event_category': 'engagement', 'value': depth });
+          }
+        });
+      });
+      [30, 60, 120, 300].forEach(function (s) { setTimeout(function () { gtag('event', 'reading_time', { 'event_category': 'engagement', 'value': s }); }, s * 1000); });
+    });
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SLAY: Geometry-Aware Spherical Linearized Attention with Yat-Kernel | Azetta.ai Newsroom</title>
+  <meta name="description"
+    content="SLAY introduces a new class of linear-time attention mechanisms built on the Yat-kernel. Co-authored with Krzysztof Choromanski (Columbia University / Google DeepMind)." />
+  <meta name="author" content="Jose Miguel Luna, Taha Bouhsine, Krzysztof Choromanski" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="SLAY: Geometry-Aware Spherical Linearized Attention with Yat-Kernel" />
+  <meta property="og:description"
+    content="A new class of linear-time attention mechanisms built on the Yat-kernel. ." />
+  <meta property="og:url" content="https://azetta.ai/news/slay-icml-2026.html" />
+  <meta property="og:image" content="https://azetta.ai/og-image.jpg" />
+  <meta property="article:published_time" content="2026-02-04" />
+
+  <link rel="canonical" href="https://azetta.ai/news/slay-icml-2026.html" />
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="apple-touch-icon" href="/logo.png" />
+
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1b998b" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Press+Start+2P&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+
+<body>
+  <div id="site-header" data-active="newsroom" data-prefix=".."></div>
+
+  <main>
+    <article class="blog-article">
+      <header class="article-header">
+        <div class="article-meta">
+          <span class="blog-tag">Paper</span>
+          <time class="blog-date" datetime="2026-02-04">February 4, 2026</time>
+        </div>
+        <h1 class="article-title">SLAY: Geometry-Aware Spherical Linearized Attention with Yat-Kernel</h1>
+        <p class="article-subtitle">
+          A new class of linear-time attention mechanisms built on the Yat-kernel.
+          Co-authored with Krzysztof Choromanski of Columbia University and Google DeepMind.
+        </p>
+        <div class="article-author">
+          <span class="author-name">Jose Miguel Luna, Taha Bouhsine, Krzysztof Choromanski</span>
+          <span class="read-time">arXiv:2602.04915</span>
+        </div>
+      </header>
+
+      <div class="article-content">
+        <section>
+          <h2>Overview</h2>
+          <p>
+            SLAY (Spherical Linearized Attention with Yat Kernels) introduces a new class of linear-time
+            attention mechanisms based on a relaxed and computationally efficient formulation of the
+            Yat-kernel. The resulting interactions are geometry-aware and inspired by inverse-square
+            interactions in physics.
+          </p>
+          <p>
+            The work is co-authored by <strong>Jose Miguel Luna</strong> and <strong>Taha Bouhsine</strong>
+            of Azetta.ai alongside <strong>Krzysztof Choromanski</strong> of
+            <strong>Columbia University</strong> and <strong>Google DeepMind</strong>—a leading researcher
+            in scalable attention mechanisms and the creator of Performers.
+          </p>
+        </section>
+
+        <section>
+          <h2>Key contributions</h2>
+          <ul>
+            <li><strong>Spherical Yat-kernel:</strong> Queries and keys are constrained to the unit sphere
+              so that attention depends only on angular alignment—grounding the mechanism in geometric
+              structure rather than arbitrary learned projections.</li>
+            <li><strong>Positive random-feature approximation:</strong> Using Bernstein's theorem, the
+              spherical Yat-kernel is expressed as a nonnegative mixture of polynomial-exponential product
+              kernels, enabling a strictly positive random-feature map for linear-time O(L) attention.</li>
+            <li><strong>Theoretical guarantees:</strong> Positive definiteness and boundedness are
+              established on the sphere. The estimator yields well-defined, nonnegative attention scores.</li>
+            <li><strong>State-of-the-art linear attention:</strong> Empirically, SLAY achieves performance
+              nearly indistinguishable from standard softmax attention while retaining linear time and memory
+              scaling—consistently outperforming prior linear-time mechanisms such as Performers and
+              Cosformers.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Why this matters</h2>
+          <p>
+            Standard softmax attention scales quadratically with sequence length, making long-context
+            Transformers prohibitively expensive. Previous linear-time approximations sacrificed quality
+            for speed. SLAY closes that gap: to the best of our knowledge, it represents the closest
+            linear-time approximation to softmax attention reported to date—enabling scalable Transformers
+            without the typical performance trade-offs of attention linearization.
+          </p>
+          <p>
+            The paper validates Azetta's core thesis: that grounding neural network operations in
+            physics-inspired geometry—here, the Yat-kernel's inverse-square interactions on the
+            sphere—produces systems that are both more efficient and more principled than arbitrary
+            learned transformations.
+          </p>
+        </section>
+
+        <section>
+          <h2>Resources</h2>
+          <ul>
+            <li><a href="https://arxiv.org/abs/2602.04915" target="_blank" rel="noopener">Read the paper on arXiv</a></li>
+            <li><a href="https://arxiv.org/pdf/2602.04915" target="_blank" rel="noopener">Download PDF</a></li>
+            <li><a href="../news.html">Back to Newsroom</a></li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <script src="../js/components.js"></script>
+  <script src="../main.js" defer></script>
+</body>
+
+</html>
