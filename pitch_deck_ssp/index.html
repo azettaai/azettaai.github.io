@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Azetta AI — Pitch Deck</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── Rotate Prompt ─────────────────────────────────────────────── -->
+  <div id="rotate-prompt">
+    <div id="rotate-card">
+      <div id="rotate-icon">
+        <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="6" width="24" height="36" rx="3" stroke="#78c4a4" stroke-width="1.5"/>
+          <circle cx="26" cy="37" r="2" fill="#78c4a4" opacity="0.5"/>
+          <path d="M34 2 C42 6 46 16 42 26" stroke="#5ab5c8" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="3 2"/>
+          <polyline points="40,22 42,26 46,24" stroke="#5ab5c8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <div id="rotate-title">Rotate Your Device</div>
+      <div id="rotate-sub">This deck is best experienced in landscape mode — or better yet, open it on a laptop.</div>
+      <button id="rotate-ok">OK, got it</button>
+    </div>
+  </div>
+
+  <!-- ── Password Gate ──────────────────────────────────────────────── -->
+  <div id="password-gate">
+    <div id="password-card">
+      <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:1.2rem;">
+        <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#5ab5c8" stroke-width="1.5" opacity="0.6"/>
+        <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#78c4a4" stroke-width="1.5" opacity="0.6" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#5ab5c8" stroke-width="1.5" opacity="0.6" transform="rotate(120 50 50)"/>
+        <circle cx="50" cy="50" r="5" fill="#78c4a4"/>
+      </svg>
+      <div id="password-brand">azetta.ai</div>
+      <div id="password-label">CONFIDENTIAL — ENTER ACCESS CODE</div>
+      <input id="password-input" type="password" placeholder="Password" autocomplete="off" spellcheck="false" />
+      <button id="password-submit">ENTER</button>
+      <div id="password-error">Incorrect password. Please try again.</div>
+    </div>
+  </div>
+
+  <div id="progress-bar"></div>
+  <div id="key-hint">← → TO NAVIGATE · F FULLSCREEN</div>
+
+  <nav id="nav">
+    <button class="nav-btn" id="btn-prev">&#8592;</button>
+    <span id="slide-counter">01 / 14</span>
+    <button class="nav-btn" id="btn-next">&#8594;</button>
+  </nav>
+
+  <div id="deck">
+
+    <!-- ================================================================
+         01 — COVER
+         ================================================================ -->
+    <section class="slide active" data-slide="1">
+      <div class="content-wrapper">
+        <!-- Atom SVG logo -->
+        <div style="margin-bottom:1.4rem;">
+          <svg class="atom-icon" width="clamp(40px,6vw,70px)" height="clamp(40px,6vw,70px)" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:clamp(40px,6vw,70px);height:clamp(40px,6vw,70px);">
+            <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#5ab5c8" stroke-width="1.5" opacity="0.6"/>
+            <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#78c4a4" stroke-width="1.5" opacity="0.6" transform="rotate(60 50 50)"/>
+            <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#5ab5c8" stroke-width="1.5" opacity="0.6" transform="rotate(120 50 50)"/>
+            <circle cx="50" cy="50" r="5" fill="#78c4a4" filter="url(#glow)"/>
+            <defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          </svg>
+        </div>
+
+        <h1 class="cover-title">azetta.ai</h1>
+
+        <p style="font-size:clamp(1rem,1.4vw,1.2rem); color:var(--text-secondary); font-weight:400; margin:0.5rem 0 0.4rem; line-height:1.6; font-family:'IBM Plex Mono',monospace;">
+          The only AI that explains every decision it makes.
+        </p>
+
+        <p style="font-size:clamp(0.8rem,1vw,0.9rem); color:var(--text-muted); margin:0 0 1.8rem; font-family:'IBM Plex Mono',monospace; letter-spacing:1px;">
+          Physics Grounded AI
+        </p>
+
+        <div style="font-size:clamp(0.8rem,1vw,0.9rem); color:var(--primary); letter-spacing:3px; text-transform:uppercase; font-family:'Chakra Petch',monospace; font-weight:600;">
+          Friends &amp; Family Funding Round
+        </div>
+      </div>
+
+      <div class="cover-footer">
+        <span class="cover-footer-text">FEBRUARY 2026</span>
+        <span class="cover-footer-text">CONFIDENTIAL — FOR DISCUSSION PURPOSES ONLY</span>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         02 — THE PROBLEM
+         ================================================================ -->
+    <section class="slide" data-slide="2">
+      <div class="s2-layout">
+
+        <!-- Top bar: tag + heading -->
+        <div class="s2-head">
+          <span class="slide-tag">// 02 — THE PROBLEM</span>
+          <h1>We Scaled AI Without Understanding It</h1>
+          <h2>Brute-force scaling of opaque AI-systems compounded AI risk, limiting enterprise adoption and AI development.</h2>
+        </div>
+
+        <!-- Quote strip -->
+        <blockquote class="s2-quote-block">
+          <p class="s2-quote-text">"People outside the field are often surprised to learn that we do not understand how our own AI creations work. This lack of understanding is unprecedented in the history of technology."</p>
+          <footer class="s2-quote-attr">— Dario Amodei, CEO Anthropic · April 2025</footer>
+        </blockquote>
+
+        <!-- Body: two columns -->
+        <div class="s2-body-split">
+
+          <!-- Left: Risk stat panels (auditorium version — always visible, no flip) -->
+          <div class="s2-risks">
+            <div class="s3-bl-header" style="margin-bottom:0.6rem;">&#9654; Every Major AI Risk Traces Back to Interpretability</div>
+            <div class="ssp-stat-grid">
+
+              <div class="ssp-stat-panel" style="border-top-color:#e8a02a;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e8a02a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <div class="ssp-stat-number" style="color:#e8a02a;">75%+</div>
+                <div class="ssp-stat-label">Hallucination Rate</div>
+                <div class="ssp-stat-sub">in legal AI queries</div>
+              </div>
+
+              <div class="ssp-stat-panel" style="border-top-color:#5ab5c8;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5ab5c8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <div class="ssp-stat-number" style="color:#5ab5c8;">~$200</div>
+                <div class="ssp-stat-label">Cost to Extract PII</div>
+                <div class="ssp-stat-sub">from frontier models</div>
+              </div>
+
+              <div class="ssp-stat-panel" style="border-top-color:#a050ff;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a050ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="2" x2="12" y2="22"/><polyline points="5 8 12 5 19 8"/><path d="M5 8l-2 5a5 5 0 0 0 10 0l-2-5"/><path d="M11 18.5a5 5 0 0 0 10 0l-2-5"/>
+                </svg>
+                <div class="ssp-stat-number" style="color:#a050ff;">85%</div>
+                <div class="ssp-stat-label">Racial Bias Rate</div>
+                <div class="ssp-stat-sub">in AI-assisted hiring</div>
+              </div>
+
+            </div>
+          </div><!-- end s2-risks -->
+
+          <!-- Right: Why This Matters -->
+          <div class="s3-bottom-line">
+            <div class="s3-bl-header">&#9654; Why This Matters</div>
+            <div class="s3-bl-panels s3-bl-panels--col">
+              <div class="s3-bl-panel">
+                <span class="s3-bl-num">01</span>
+                <h5 class="s3-bl-title">Blocks AI self-improvement</h5>
+              </div>
+              <div class="s3-bl-panel">
+                <span class="s3-bl-num">02</span>
+                <h5 class="s3-bl-title">Locks out regulated industries</h5>
+              </div>
+              <div class="s3-bl-panel">
+                <span class="s3-bl-num">03</span>
+                <h5 class="s3-bl-title">No delegation without inspection</h5>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end s2-body-split -->
+      </div><!-- end s2-layout -->
+    </section>
+
+
+    <!-- ================================================================
+         03 — THE INCUMBENT APPROACH
+         ================================================================ -->
+    <section class="slide" data-slide="3">
+      <div class="content-wrapper">
+        <span class="slide-tag">// 03 — THE INCUMBENT APPROACH</span>
+        <h1>Everyone Is Trying to Reverse-Engineer a Black Box</h1>
+        <h2>Post-hoc tools are expensive, don't scale, and only treat the symptom — not the cause.</h2>
+
+        <div class="split-col" style="margin-top:1rem;">
+          <div>
+            <h3>The Research Community's Approach</h3>
+            <ul>
+              <li>Build opaque models at scale. Understand them after.</li>
+              <li>SAEs require <strong>34M+ features per layer</strong> — orders of magnitude short of complete.</li>
+              <li><strong>Large players have no incentive to slow down.</strong></li>
+            </ul>
+            <div class="highlight-box red" style="margin-top:0.8rem;">
+              <span style="font-size:.85rem;"><em>"We think it's quite likely that we're <strong class="red">orders of magnitude short</strong>, and that if we wanted to get all the features — in all layers — we would need to use <strong class="red">much more compute than the total compute needed to train the underlying models</strong>."</em><span style="font-size:0.72rem; color:var(--text-secondary); margin-top:0.4rem; display:block; font-style:normal; letter-spacing:0.3px;">— Anthropic, Scaling Monosemanticity, 2024</span></span>
+            </div>
+          </div>
+
+          <div id="blackbox-demo">
+            <div class="blackbox-demo">
+              <!-- Prompt / output line -->
+              <div class="bb-prompt-wrap">
+                <div class="bb-prompt-row">
+                  <span class="bb-io-label">Prompt</span>
+                  <span class="bb-prompt-text">"the capital of Mexico is"</span>
+                </div>
+                <div class="bb-prompt-row">
+                  <span class="bb-io-label">Output</span>
+                  <span class="bb-output-text" id="bb-output"></span><span class="bb-cursor" id="bb-cursor">▋</span>
+                </div>
+              </div>
+              <!-- SVG neural network -->
+              <div class="bb-svg-wrap">
+                <svg id="bb-svg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" width="100%">
+                  <g id="bb-edges"></g>
+                  <!-- Black-box overlay covers all hidden layers -->
+                  <rect x="52" y="1" width="302" height="155" rx="3"
+                        fill="rgba(4,3,3,0.88)" stroke="rgba(120,130,160,0.22)"
+                        stroke-width="1" stroke-dasharray="4,3"/>
+                  <!-- Implied depth markers -->
+                  <text x="203" y="11" text-anchor="middle"
+                        font-family="'IBM Plex Mono',monospace" font-size="6.5"
+                        fill="rgba(150,160,190,0.22)">· · · more layers above · · ·</text>
+                  <text x="203" y="153" text-anchor="middle"
+                        font-family="'IBM Plex Mono',monospace" font-size="6.5"
+                        fill="rgba(150,160,190,0.22)">· · · more layers below · · ·</text>
+                  <text x="203" y="82" text-anchor="middle"
+                        font-family="'Chakra Petch',monospace" font-size="9"
+                        fill="rgba(170,180,210,0.22)" letter-spacing="3" font-weight="700">BLACK BOX</text>
+                  <text x="203" y="94" text-anchor="middle"
+                        font-family="'IBM Plex Mono',monospace" font-size="5.5"
+                        fill="rgba(150,160,190,0.18)">96 layers · 8,192 neurons each</text>
+                  <g id="bb-nodes"></g>
+                  <!-- Layer labels below SVG -->
+                  <text x="28" y="158" text-anchor="middle"
+                        font-family="'Chakra Petch',monospace" font-size="5.5"
+                        fill="rgba(120,196,164,0.45)">INPUT</text>
+                  <text x="203" y="158" text-anchor="middle"
+                        font-family="'Chakra Petch',monospace" font-size="5.5"
+                        fill="rgba(150,160,190,0.32)">HIDDEN LAYERS (96 total)</text>
+                  <text x="378" y="158" text-anchor="middle"
+                        font-family="'Chakra Petch',monospace" font-size="5.5"
+                        fill="rgba(120,196,164,0.45)">OUTPUT</text>
+                </svg>
+              </div>
+              <!-- Polysemantic note (condensed for auditorium) -->
+              <div class="bb-polysemantic">
+                <strong class="bb-poly-kicker">Root cause:</strong> Each neuron fires for dozens of unrelated concepts simultaneously — this is called <em>superposition</em>. Post-hoc tools cannot fix what was baked in by design.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         04 — OUR APPROACH
+         ================================================================ -->
+    <section class="slide" data-slide="4">
+      <div class="content-wrapper" style="display:flex;flex-direction:column;gap:0.4rem;height:100%;box-sizing:border-box;justify-content:center;">
+        <span class="slide-tag">// 04 — OUR APPROACH</span>
+        <h1>Pioneering the Field of Physics Grounded AI</h1>
+        <h2>We reimagine AI through a physics lens — revealing fundamental structure that makes models interpretable, steerable, and efficient by design.</h2>
+
+        <div class="yat-container">
+
+          <div class="yat-content">
+            <div>
+              <p class="yat-title">YAT KERNEL</p>
+              <p class="yat-subtitle">The Yat Kernel is a physics-grounded mercer kernel that captures both alignment and proximity to create highly efficient gravity wells in representation space</p>
+            </div>
+            <div class="yat-formula-box">
+              <div>
+                <p class="yat-formula">ⵟ(x, w) = (x·w)² / ‖x − w‖²</p>
+              </div>
+            </div>
+            <p class="yat-description">Each neuron bends representation space around itself — creating distinct gravity wells. The result: monosemantic neurons by design. Interpretability without post-hoc approximation.</p>
+          </div>
+
+          <div class="yat-viz-wrapper">
+            <div class="yat-viz-header">
+              <span class="viz-label">ⵟ — YAT Kernel Manifold</span>
+              <span class="viz-hint">click to add neurons · up to 5</span>
+            </div>
+            <canvas id="yat-manifold-canvas" class="yat-canvas" aria-label="Interactive YAT Kernel manifold — each neuron bends representation space like a gravity well"></canvas>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         05 — THE AZETTA APPROACH
+         ================================================================ -->
+    <section class="slide" data-slide="5">
+      <div class="content-wrapper">
+        <span class="slide-tag">// 05 — OUR APPROACH</span>
+        <h1>Glass Box Models — Interpretable by Design</h1>
+        <h2>Information has its own physics. Reimagining AI through that lens unlocks interpretability, steerability, and efficiency simultaneously.</h2>
+
+        <div class="split-col" style="margin-top:1rem;">
+          <div>
+            <h3>Physics Grounded AI Models are:</h3>
+            <div class="pillar-grid" style="grid-template-columns:1fr 1fr; margin-top:0.6rem;">
+              <div class="pillar-card">
+                <div class="pillar-name">Interpretable</div>
+                <p class="pillar-desc">One neuron. One concept.</p>
+              </div>
+              <div class="pillar-card">
+                <div class="pillar-name">Steerable</div>
+                <p class="pillar-desc">Target neurons directly.</p>
+              </div>
+              <div class="pillar-card">
+                <div class="pillar-name">Efficient</div>
+                <p class="pillar-desc">10× fewer parameters.</p>
+              </div>
+              <div class="pillar-card">
+                <div class="pillar-name">Performant</div>
+                <p class="pillar-desc">No trade-off.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="pg-demo" class="pg-demo-wrap">
+            <div class="pg-demo-header">
+              <span class="pg-demo-kicker">⬡ GLASS BOX</span>
+              <span class="pg-phase-label" id="pg-phase-label">Tracing Neuron Activation</span>
+              <span class="pg-icml">ICML 2026</span>
+            </div>
+            <!-- Prompt / output strip (mirrors slide 3) -->
+            <div class="bb-prompt-wrap">
+              <div class="bb-prompt-row">
+                <span class="bb-io-label">Prompt</span>
+                <span class="bb-prompt-text">"the capital of Mexico is"</span>
+              </div>
+              <div class="bb-prompt-row">
+                <span class="bb-io-label">Output</span>
+                <span class="bb-output-text" id="pg-output"></span><span class="bb-cursor" id="pg-cursor">▋</span>
+              </div>
+            </div>
+            <!-- Monosemantic network: mirrors slide 3 layout (INPUT → GLASS BOX → OUTPUT) -->
+            <svg id="pg-svg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" width="100%">
+              <g id="pg-edges"></g>
+              <!-- Glass-box border — transparent/dashed cyan, contrasts slide 3's opaque black rect -->
+              <rect x="52" y="1" width="302" height="155" rx="3"
+                    fill="rgba(90,181,200,0.04)" stroke="rgba(90,181,200,0.28)"
+                    stroke-width="1" stroke-dasharray="4,3"/>
+              <text x="203" y="11" text-anchor="middle"
+                    font-family="'IBM Plex Mono',monospace" font-size="6.5"
+                    fill="rgba(90,181,200,0.22)">· · · interpretable by design · · ·</text>
+              <!-- Manifold path, revealed in phase 2 -->
+              <path id="pg-manifold-path" fill="none" stroke="rgba(90,181,200,0)"
+                    stroke-width="2" stroke-dasharray="5,4"/>
+              <g id="pg-nodes"></g>
+              <g id="pg-concept-labels"></g>
+              <!-- Layer labels (match slide 3 positions) -->
+              <text x="28" y="158" text-anchor="middle"
+                    font-family="'Chakra Petch',monospace" font-size="5.5"
+                    fill="rgba(120,196,164,0.45)">INPUT</text>
+              <text x="200" y="158" text-anchor="middle"
+                    font-family="'Chakra Petch',monospace" font-size="5.5"
+                    fill="rgba(90,181,200,0.35)">INTERPRETABLE LAYERS (3)</text>
+              <text x="378" y="158" text-anchor="middle"
+                    font-family="'Chakra Petch',monospace" font-size="5.5"
+                    fill="rgba(120,196,164,0.45)">OUTPUT</text>
+            </svg>
+            <div class="pg-trail" id="pg-trail"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         06 — COMPETITIVE LANDSCAPE
+         ================================================================ -->
+    <section class="slide" data-slide="6">
+      <div class="content-wrapper">
+        <span class="slide-tag">// 06 — COMPETITIVE LANDSCAPE</span>
+        <h1>Everyone Else is Building Very Expensive Microscopes</h1>
+        <h2>Azetta is the only player in this validated market competing with low-cost interpretability by design.</h2>
+
+        <div class="split-col" style="margin-top:1rem; align-items:stretch;">
+          <!-- 2×2 Matrix -->
+          <div style="display:flex; flex-direction:column; flex:1; min-height:0;">
+            <h3>Market Map — Interpretability Landscape</h3>
+
+            <!-- Matrix row: Y-axis labels on left + grid -->
+            <div style="display:flex; gap:0; flex:1; min-height:clamp(200px,36vh,380px); margin-top:0.6rem; align-items:stretch;">
+
+              <!-- Y-axis: rotated labels, left of matrix -->
+              <div style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:0.2rem 0.55rem 0.2rem 0; border-right:1px solid rgba(138,138,138,0.25); margin-right:0.55rem; flex-shrink:0;">
+                <span class="axis-label" style="color:var(--primary); writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;">High Efficiency</span>
+                <span style="color:var(--text-muted); font-size:0.75rem; line-height:1; flex-shrink:0;">↕</span>
+                <span class="axis-label" style="color:var(--text-muted); writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;">Low Efficiency</span>
+              </div>
+
+              <!-- Matrix grid -->
+              <div class="matrix-wrap" style="flex:1; margin-top:0;">
+                <!-- Top-Left: Post-Hoc, Low Compute -->
+                <div class="mx-cell" style="background:rgba(200,184,48,0.05); border:1px solid rgba(200,184,48,0.2);">
+                  <div class="mx-label">Monitoring &amp; Observability</div>
+                  <div class="mx-players">
+                    <span class="mx-tag"><img class="co-logo" src="logos/arthur.png" alt="" onerror="this.remove()" />Arthur AI</span>
+                    <span class="mx-tag">Fiddler</span>
+                    <span class="mx-tag"><img class="co-logo" src="logos/wandb.ico" alt="" onerror="this.remove()" />W&amp;B</span>
+                    <span class="mx-tag"><img class="co-logo" src="logos/scale.ico" alt="" onerror="this.remove()" />Scale AI</span>
+                  </div>
+                </div>
+                <!-- Top-Right: By Design, Low Compute — AZETTA -->
+                <div class="mx-cell azetta-cell">
+                  <div class="mx-label green">Interpretability by Design</div>
+                  <div class="mx-players">
+                    <span class="mx-tag hi">
+                      <svg width="18" height="18" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+                        <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#78c4a4" stroke-width="2.5" opacity="0.9"/>
+                        <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#5ab5c8" stroke-width="2.5" opacity="0.9" transform="rotate(60 50 50)"/>
+                        <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#78c4a4" stroke-width="2.5" opacity="0.9" transform="rotate(120 50 50)"/>
+                        <circle cx="50" cy="50" r="5" fill="#78c4a4"/>
+                      </svg>
+                      AZETTA AI
+                    </span>
+                  </div>
+                </div>
+                <!-- Bottom-Left: Post-Hoc, High Compute -->
+                <div class="mx-cell" style="background:rgba(196,100,100,0.05); border:1px solid rgba(196,100,100,0.18);">
+                  <div class="mx-label">Post-Hoc Interpretability</div>
+                  <div class="mx-players">
+                    <span class="mx-tag"><img class="co-logo" src="logos/anthropic.ico" alt="" onerror="this.remove()" />Anthropic</span>
+                    <span class="mx-tag"><img class="co-logo" src="logos/google.ico" alt="" onerror="this.remove()" />Google TCAV</span>
+                    <span class="mx-tag"><img class="co-logo" src="logos/openai_fav.ico" alt="" onerror="this.remove()" />OpenAI SAEs</span>
+                    <span class="mx-tag"><img class="co-logo" src="logos/goodfire.png" alt="" onerror="this.remove()" />Goodfire</span>
+                    <span class="mx-tag">Transluce</span>
+                  </div>
+                </div>
+                <!-- Bottom-Right: By Design, Low Efficiency — empty -->
+                <div class="mx-cell" style="opacity:0.2;">
+                </div>
+              </div>
+            </div>
+
+            <!-- X-axis labels: directly below matrix, indented past y-axis column -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(138,138,138,0.2); margin-top:0.35rem; padding-top:0.3rem; padding-left:3.2rem;">
+              <span class="axis-label" style="color:var(--text-muted);">← Post-Hoc</span>
+              <span class="axis-label" style="color:var(--primary);">By Design →</span>
+            </div>
+          </div>
+
+          <div>
+            <h3>Competitive Analysis</h3>
+            <div class="feature-card" style="margin-bottom:0.8rem; border-left:3px solid var(--primary); background:rgba(120,196,164,0.05);">
+              <h4 class="green">Azetta AI ✦</h4>
+              <p>Goodfire's <strong>~$50M Series A</strong> proves the market. <strong>Azetta holds an architectural advantage no post-hoc tool can replicate.</strong></p>
+            </div>
+
+            <div class="feature-card" style="margin-bottom:0.8rem; border-left:3px solid var(--red); background:rgba(196,100,100,0.04);">
+              <h4 class="red">Post-Hoc Interpretability</h4>
+              <p>Right problem, wrong approach. SAEs are <strong>prohibitively expensive, don't scale, and treat a symptom.</strong></p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         07 — GO-TO-MARKET
+         ================================================================ -->
+    <section class="slide" data-slide="7">
+      <div class="content-wrapper s7-wrapper" style="display:flex;flex-direction:column;gap:0.5rem;height:100%;box-sizing:border-box;">
+        <span class="slide-tag">// 07 — GO-TO-MARKET</span>
+        <h1 style="margin-bottom:0.05rem;">The Research Flywheel</h1>
+        <h2 style="margin-bottom:0.2rem;">Research credibility, followed by key patents and relevant product spinoffs as the primary growth engine — a proven model behind successful AI labs.</h2>
+
+        <!-- Body: flywheel (2/3) + IP Shield card (1/3) -->
+        <div class="s7-body" style="flex:1;min-height:0;display:flex;gap:1rem;align-items:flex-start;margin-right:8%;">
+
+          <!-- Left: circular flywheel SVG -->
+          <div style="flex:2;min-width:0;display:flex;align-items:center;justify-content:center;align-self:stretch;">
+            <svg class="fw-svg" viewBox="0 0 560 440" preserveAspectRatio="xMidYMid meet"
+                 xmlns="http://www.w3.org/2000/svg" style="max-height:100%;max-width:100%;">
+              <defs>
+                <!-- Fixed-size white arrowhead -->
+                <marker id="fw-arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4"
+                        orient="auto" markerUnits="userSpaceOnUse">
+                  <polygon points="0 0, 8 4, 0 8" fill="white" opacity="0.7"/>
+                </marker>
+                <!-- Active white arrowhead (fully opaque) -->
+                <marker id="fw-arrowhead-active" markerWidth="8" markerHeight="8" refX="7" refY="4"
+                        orient="auto" markerUnits="userSpaceOnUse">
+                  <polygon points="0 0, 8 4, 0 8" fill="white"/>
+                </marker>
+              </defs>
+
+              <!-- Faint guide circle (r=170) -->
+              <circle cx="280" cy="220" r="170" fill="none"
+                      stroke="rgba(138,138,138,0.07)" stroke-width="1" stroke-dasharray="3,5"/>
+
+              <!--
+                Arrows: quadratic bezier, center of facing edge → center of facing edge.
+                Control points pushed 30px outward from SVG center (280,220) via midpoint direction.
+                Node boxes (128×76, hw=64, hh=38):
+                  0 Research  (280, 50)   1 Patent   (427,135)
+                  2 Build     (427,305)   3 Publish  (280,390)
+                  4 Sell ML   (133,305)   5 Enterprise(133,135)
+              -->
+              <!-- 1→2 Research right-side (344,50) → Patent top (427,97), ctrl outward upper-right -->
+              <path class="fw-arc" data-arc="0"
+                    d="M 344 50 Q 400 53 427 97"
+                    fill="none" stroke="rgba(120,196,164,0.15)" stroke-width="2"
+                    marker-end="url(#fw-arrowhead)"/>
+              <!-- 2→3 Patent bottom-outer (475,173) → Build top-outer (475,267), ctrl outward right -->
+              <path class="fw-arc" data-arc="1"
+                    d="M 475 173 Q 503 220 475 267"
+                    fill="none" stroke="rgba(120,196,164,0.15)" stroke-width="2"
+                    marker-end="url(#fw-arrowhead)"/>
+              <!-- 3→4 Build bottom (427,343) → Publish right-side (344,390), ctrl outward lower-right -->
+              <path class="fw-arc" data-arc="2"
+                    d="M 427 343 Q 400 387 344 390"
+                    fill="none" stroke="rgba(120,196,164,0.15)" stroke-width="2"
+                    marker-end="url(#fw-arrowhead)"/>
+              <!-- 4→5 Publish left-side (216,390) → Sell-ML bottom (133,343), ctrl outward lower-left -->
+              <path class="fw-arc" data-arc="3"
+                    d="M 216 390 Q 160 387 133 343"
+                    fill="none" stroke="rgba(120,196,164,0.15)" stroke-width="2"
+                    marker-end="url(#fw-arrowhead)"/>
+              <!-- 5→6 Sell-ML top-outer (81,267) → Enterprise bottom-outer (81,173), ctrl outward left -->
+              <path class="fw-arc" data-arc="4"
+                    d="M 81 267 Q 53 220 81 173"
+                    fill="none" stroke="rgba(120,196,164,0.15)" stroke-width="2"
+                    marker-end="url(#fw-arrowhead)"/>
+              <!-- 6→1 Enterprise top (133,97) → Research left-side (216,50), ctrl outward upper-left -->
+              <path class="fw-arc" data-arc="5"
+                    d="M 133 97 Q 160 53 216 50"
+                    fill="none" stroke="rgba(120,196,164,0.15)" stroke-width="2"
+                    marker-end="url(#fw-arrowhead)"/>
+
+              <!-- Centre circle -->
+              <circle cx="280" cy="220" r="68" fill="rgba(6,7,12,0.95)"
+                      stroke="rgba(90,181,200,0.2)" stroke-width="1"/>
+              <text x="280" y="213" text-anchor="middle" dominant-baseline="middle"
+                    font-family="'Chakra Petch',monospace" font-size="7.5"
+                    fill="rgba(120,196,164,0.6)" letter-spacing="2.5" font-weight="700">RESEARCH</text>
+              <text x="280" y="228" text-anchor="middle" dominant-baseline="middle"
+                    font-family="'Chakra Petch',monospace" font-size="7.5"
+                    fill="rgba(120,196,164,0.6)" letter-spacing="2.5" font-weight="700">FLYWHEEL</text>
+
+              <!-- ── Nodes (128×76 boxes, r=170, centre 280,220) ── -->
+
+              <!-- Node 0: Research — top (centre 280,50), box at (216,12) -->
+              <g class="fw-node" data-step="0" transform="translate(216,12)">
+                <rect class="fw-node-bg" x="0" y="0" width="128" height="76" rx="3"/>
+                <text class="fw-num" x="8" y="14">01</text>
+                <text class="fw-ttl" x="8" y="29">Research</text>
+                <text class="fw-dsc" x="8" y="44">ICML · NeurIPS</text>
+                <text class="fw-dsc" x="8" y="56">&amp; ICLR yearly.</text>
+              </g>
+
+              <!-- Node 1: Patent — top-right (centre 427,135), box at (363,97) -->
+              <g class="fw-node" data-step="1" transform="translate(363,97)">
+                <rect class="fw-node-bg" x="0" y="0" width="128" height="76" rx="3"/>
+                <text class="fw-num" x="8" y="14">02</text>
+                <text class="fw-ttl" x="8" y="29">Patent</text>
+                <text class="fw-dsc" x="8" y="44">IP secured before</text>
+                <text class="fw-dsc" x="8" y="56">every publication.</text>
+              </g>
+
+              <!-- Node 2: Build — bottom-right (centre 427,305), box at (363,267) -->
+              <g class="fw-node" data-step="2" transform="translate(363,267)">
+                <rect class="fw-node-bg" x="0" y="0" width="128" height="76" rx="3"/>
+                <text class="fw-num" x="8" y="14">03</text>
+                <text class="fw-ttl" x="8" y="29">Build</text>
+                <text class="fw-dsc" x="8" y="44">Research → spinoff</text>
+                <text class="fw-dsc" x="8" y="56">products &amp; tools.</text>
+              </g>
+
+              <!-- Node 3: Publish — bottom (centre 280,390), box at (216,352) -->
+              <g class="fw-node" data-step="3" transform="translate(216,352)">
+                <rect class="fw-node-bg" x="0" y="0" width="128" height="76" rx="3"/>
+                <text class="fw-num" x="8" y="14">04</text>
+                <text class="fw-ttl" x="8" y="29">Publish</text>
+                <text class="fw-dsc" x="8" y="44">Papers live. CTOs</text>
+                <text class="fw-dsc" x="8" y="56">&amp; devs take notice.</text>
+              </g>
+
+              <!-- Node 4: Sell to ML Community — bottom-left (centre 133,305), box at (69,267) -->
+              <g class="fw-node" data-step="4" transform="translate(69,267)">
+                <rect class="fw-node-bg" x="0" y="0" width="128" height="76" rx="3"/>
+                <text class="fw-num" x="8" y="14">05</text>
+                <text class="fw-ttl" x="8" y="29">Sell</text>
+                <text class="fw-dsc" x="8" y="44">ML engineers &amp;</text>
+                <text class="fw-dsc" x="8" y="56">researchers buy.</text>
+              </g>
+
+              <!-- Node 5: Enterprise — top-left (centre 133,135), box at (69,97) -->
+              <g class="fw-node" data-step="5" transform="translate(69,97)">
+                <rect class="fw-node-bg" x="0" y="0" width="128" height="76" rx="3"/>
+                <text class="fw-num" x="8" y="14">06</text>
+                <text class="fw-ttl" x="8" y="29">Enterprise</text>
+                <text class="fw-dsc" x="8" y="44">Champions land</text>
+                <text class="fw-dsc" x="8" y="56">org-wide contracts.</text>
+              </g>
+
+            </svg>
+          </div>
+
+          <!-- Right column: two stacked cards -->
+          <div class="s7-right" style="flex:1.4;min-width:0;display:flex;flex-direction:column;gap:1.2rem;align-self:center;">
+
+            <!-- Top: Legal IP Shield with Morrison Foerster logo -->
+            <div class="ip-shield-card">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;">
+                <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
+                  <span class="ip-shield-icon">⚖</span>
+                  <div class="ip-shield-heading">Legal IP Shield</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.35rem;flex-shrink:0;">
+                  <span class="ip-shield-partner-label">In partnership with</span>
+                  <img src="logos/mofo.ico" alt="" style="width:16px;height:16px;object-fit:contain;border-radius:2px;flex-shrink:0;" onerror="this.style.display='none'"/>
+                  <div class="ip-shield-firm" style="font-size:0.75rem;">Morrison Foerster</div>
+                </div>
+              </div>
+              <div class="ip-shield-divider"></div>
+              <div class="ip-shield-points">
+                <div class="ip-shield-point">
+                  <span class="ip-shield-bullet">▶</span>
+                  <span>Every breakthrough patented <strong>before</strong> publication — prior art established first.</span>
+                </div>
+                <div class="ip-shield-point">
+                  <span class="ip-shield-bullet">▶</span>
+                  <span>Architectural moat protected against replication.</span>
+                </div>
+                <div class="ip-shield-point">
+                  <span class="ip-shield-bullet">▶</span>
+                  <span>Active litigation strategy ready if infringement occurs.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom: Proven Model card with company logos -->
+            <div class="proven-model-card">
+              <div class="proven-model-heading">A Proven GTM Model</div>
+              <p class="proven-model-desc">Research → Periodica → Aether → more. Proven by the world's best AI labs.</p>
+              <div class="proven-companies">
+                <div class="proven-co">
+                  <img src="logos/worldlabs.ico" alt="" onerror="this.style.display='none'"/>
+                  <span>WorldLabs</span>
+                </div>
+                <div class="proven-co">
+                  <img src="logos/anthropic.ico" alt="" onerror="this.style.display='none'"/>
+                  <span>Anthropic</span>
+                </div>
+                <div class="proven-co">
+                  <img src="logos/mistral.ico" alt="" onerror="this.style.display='none'"/>
+                  <span>Mistral</span>
+                </div>
+                <div class="proven-co">
+                  <img src="logos/deepmind_new.png" alt="" onerror="this.style.display='none'"/>
+                  <span>DeepMind</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         08 — RESEARCH AGENDA
+         ================================================================ -->
+    <section class="slide" data-slide="8">
+      <div class="content-wrapper" style="display:flex;flex-direction:column;gap:0.3rem;height:100%;box-sizing:border-box;">
+        <span class="slide-tag">// 08 — RESEARCH AGENDA</span>
+        <h1 style="margin-bottom:0.05rem;">Leads with Research — ICML 2026</h1>
+        <h2 style="margin-bottom:0.3rem;">2 papers submitted. Patents before every publication. Research fuels the flywheel.</h2>
+
+        <!-- Grid: 2/3 left · 1/3 right. Left: strategy card (auto) + model comparison (1fr). Right: SLAY spans both rows. -->
+        <div style="display:grid;grid-template-columns:2fr 1fr;grid-template-rows:auto 1fr;gap:1rem;flex:1;min-height:0;">
+
+          <!-- Row 1, Col 1: Research Publishing Strategy + paper links -->
+          <div class="proof-card" style="padding:0.85rem 1rem;margin:0;display:flex;flex-direction:column;gap:0;">
+            <div class="proof-title" style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;font-size:1.05rem;">
+              Research Publishing Strategy
+              <span class="proof-badge proof-badge-gold" style="margin-top:0;">2 PAPERS SUBMITTED</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.7rem;">
+              <div style="display:flex;align-items:flex-start;gap:0.45rem;">
+                <span style="color:var(--primary);font-size:0.65rem;line-height:1;margin-top:0.15rem;flex-shrink:0;">▶</span>
+                <p class="proof-body" style="margin:0;font-size:clamp(0.72rem,1vw,0.88rem);">Annual publications at <strong>ICML, NeurIPS and ICLR</strong>.</p>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:0.45rem;">
+                <span style="color:var(--primary);font-size:0.65rem;line-height:1;margin-top:0.15rem;flex-shrink:0;">▶</span>
+                <p class="proof-body" style="margin:0;font-size:clamp(0.72rem,1vw,0.88rem);"><strong>2 papers at ICML 2026</strong> — SLAY Attention &amp; <strong style="color:var(--accent);">NoMoreDelulu (SOTA, 10× fewer params)</strong>.</p>
+              </div>
+            </div>
+
+            <!-- Paper & library link cards -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;">
+
+              <a href="https://openreview.net/pdf?id=1AFenZBIcW" target="_blank" rel="noopener" class="research-link-card">
+                <span class="rlc-venue">ICML 2026 · OpenReview</span>
+                <span class="rlc-title">NoMoreDelulu</span>
+                <span class="rlc-desc">SOTA at 10× fewer parameters.</span>
+                <span class="rlc-cta">Read paper →</span>
+              </a>
+
+              <a href="https://arxiv.org/pdf/2602.04915" target="_blank" rel="noopener" class="research-link-card">
+                <span class="rlc-venue">ICML 2026 · arXiv</span>
+                <span class="rlc-title">SLAY Attention</span>
+                <span class="rlc-desc">Linear-time attention that beats softmax.</span>
+                <span class="rlc-cta">Read paper →</span>
+              </a>
+
+              <a href="https://pypi.org/project/nmn/" target="_blank" rel="noopener" class="research-link-card research-link-card--lib">
+                <span class="rlc-venue">Open Source · PyPI</span>
+                <span class="rlc-title">Neural Matter Networks</span>
+                <span class="rlc-desc">Build Physics Grounded AI models.</span>
+                <span class="rlc-cta">pip install nmn →</span>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Row 2, Col 1: model comparison — fills remaining height -->
+          <div style="min-height:0;display:flex;flex-direction:column;gap:0.2rem;">
+            <p class="s11-label" style="flex-shrink:0;margin:0;">Performance vs. Parameter Count — SOTA scores with 10× fewer parameters</p>
+            <div style="flex:1;min-height:0;overflow:hidden;border:1px solid var(--border);border-radius:3px;background:#fff;">
+              <img src="Assets/model_comparison.png" alt="Azetta model comparison" style="width:100%;height:100%;object-fit:contain;display:block;" />
+            </div>
+          </div>
+
+          <!-- Col 2, spans both rows: Full SLAY portrait -->
+          <div style="grid-row:1/3;grid-column:2;min-height:0;display:flex;flex-direction:column;gap:0.2rem;">
+            <p class="s11-label" style="flex-shrink:0;margin:0;">Physics Grounded vs. Softmax Attention</p>
+            <div style="flex:1;min-height:0;overflow:hidden;border:1px solid var(--border);border-radius:3px;">
+              <img src="Assets/Full_SLAY.png" alt="Full SLAY" style="width:100%;height:100%;object-fit:contain;display:block;" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         09 — INITIAL PRODUCT (PERIODICA)
+         ================================================================ -->
+    <section class="slide" data-slide="9">
+      <div class="content-wrapper" style="display:flex;flex-direction:column;gap:0.25rem;height:100%;box-sizing:border-box;">
+        <span class="slide-tag">// 09 — INITIAL PRODUCT &amp; MONETIZATION</span>
+        <h1 style="margin-bottom:0.05rem;">First Product Spinoff: Periodica</h1>
+        <h2 style="margin-bottom:0.3rem;">The first ever full model interpretability and steering platform. Any model in — audited, steerable models out.</h2>
+
+        <!-- ── Split: text left · demo right ── -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;flex:1;min-height:0;">
+
+          <!-- Left: product context -->
+          <div style="display:flex;flex-direction:column;gap:0.5rem;justify-content:center;">
+            <div class="feature-card" style="padding:0.75rem 1rem;">
+              <h4 style="font-size:0.95rem;margin-bottom:0.35rem;">What is Periodica?</h4>
+              <p>Upload any AI model — Periodica maps every neuron to a concept and lets you steer behavior directly. <strong>No retraining required.</strong></p>
+            </div>
+            <div class="feature-card" style="padding:0.75rem 1rem;">
+              <h4 style="font-size:0.95rem;margin-bottom:0.35rem;">Problems We Solve</h4>
+              <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.3rem;">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;padding:0.2rem 0.55rem;border-radius:3px;background:rgba(232,160,42,0.12);border:1px solid rgba(232,160,42,0.35);color:#e8a02a;">Hallucinations</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;padding:0.2rem 0.55rem;border-radius:3px;background:rgba(232,69,135,0.12);border:1px solid rgba(232,69,135,0.35);color:#e84587;">Bias</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;padding:0.2rem 0.55rem;border-radius:3px;background:rgba(232,69,69,0.12);border:1px solid rgba(232,69,69,0.35);color:#e84545;">Sycophancy</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;padding:0.2rem 0.55rem;border-radius:3px;background:rgba(160,80,255,0.12);border:1px solid rgba(160,80,255,0.35);color:#a050ff;">Privacy Leakage</span>
+              </div>
+            </div>
+            <div class="feature-card" style="padding:0.75rem 1rem;">
+              <h4 class="cyan" style="font-size:0.95rem;margin-bottom:0.35rem;">Beachhead Markets</h4>
+              <p>Healthcare · Finance · Enterprise AI</p>
+            </div>
+            <div class="feature-card" style="padding:0.75rem 1rem;">
+              <h4 class="green" style="font-size:0.95rem;margin-bottom:0.35rem;">Business Model</h4>
+              <p><strong>Free audit</strong> → <strong>monthly membership</strong></p>
+            </div>
+          </div>
+
+          <!-- Right: interactive demo -->
+          <div id="periodica-demo" class="pd-demo">
+
+            <!-- Premium status banner (shown after upgrade) -->
+            <div class="pd-premium-banner" id="pd-premium-banner" style="display:none;">
+              <span class="pd-premium-star">✦</span> PERIODICA PREMIUM &nbsp;—&nbsp; ACTIVE
+            </div>
+
+            <!-- Screen 0: Splash -->
+            <div class="pd-screen pd-active" id="pd-splash">
+              <div class="pd-splash-inner">
+                <div class="pd-splash-title">Periodica</div>
+                <div class="pd-splash-sub">Full AI Model Interpretability Platform</div>
+                <button class="pd-cta" id="pd-explore-btn">Explore Demo ›</button>
+              </div>
+            </div>
+
+            <!-- Screen 1: Upload -->
+            <div class="pd-screen" id="pd-upload">
+              <div class="pd-upload-inner">
+                <svg class="pd-upload-svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p class="pd-upload-title">Drop your model or pick a demo</p>
+                <p class="pd-upload-sub">PyTorch &nbsp;·&nbsp; TensorFlow &nbsp;·&nbsp; ONNX &nbsp;·&nbsp; HuggingFace</p>
+                <div class="pd-chips">
+                  <span class="pd-chip" data-model="GPT-J-6B">GPT-J-6B</span>
+                  <span class="pd-chip pd-chip-sel" data-model="Llama-3-8B">Llama-3-8B</span>
+                  <span class="pd-chip" data-model="Mistral-7B">Mistral-7B</span>
+                </div>
+                <button class="pd-cta" id="pd-start-btn">Analyze with Periodica ›</button>
+              </div>
+            </div>
+
+            <!-- Screen 2: Scan -->
+            <div class="pd-screen" id="pd-scan">
+              <div class="pd-scan-inner">
+                <div class="pd-scan-heading">Periodica is mapping <span id="pd-scan-model-name" class="pd-green">Llama-3-8B</span></div>
+                <div class="pd-scan-track"><div id="pd-scan-fill" class="pd-scan-fill"></div></div>
+                <div id="pd-scan-phase" class="pd-scan-phase">Tokenizing architecture…</div>
+                <div class="pd-scan-count"><span id="pd-n-count">0</span> neurons analyzed</div>
+              </div>
+            </div>
+
+            <!-- Screen 3: Map + Detail -->
+            <div class="pd-screen" id="pd-main">
+              <!-- Left: Neuron Map -->
+              <div class="pd-map-col">
+                <div class="pd-map-hdr">
+                  <span class="pd-map-chip" id="pd-map-model">Llama-3-8B</span>
+                  <span class="pd-map-meta"><span style="color:#e84545;" id="pd-flag-count">4 flags</span> &nbsp;·&nbsp; <span style="color:var(--secondary);">8,192</span> neurons mapped</span>
+                </div>
+                <div class="pd-search-row">
+                  <input type="text" class="pd-search-input" id="pd-search-input" placeholder='Search for a concept… e.g. "IP-protected data"' />
+                  <button class="pd-search-btn" id="pd-search-btn">Search</button>
+                </div>
+                <div id="pd-map" class="pd-map"></div>
+                <div class="pd-legend">
+                  <span class="pd-leg"><span class="pd-ldot" style="background:#e84545;box-shadow:0 0 4px #e84545;"></span>Sycophancy</span>
+                  <span class="pd-leg"><span class="pd-ldot" style="background:#e8a02a;box-shadow:0 0 4px #e8a02a;"></span>Hallucination</span>
+                  <span class="pd-leg"><span class="pd-ldot" style="background:#a050ff;box-shadow:0 0 4px #a050ff;"></span>PII</span>
+                  <span class="pd-leg"><span class="pd-ldot" style="background:#e84587;box-shadow:0 0 4px #e84587;"></span>Bias</span>
+                  <span class="pd-leg" id="pd-leg-ip" style="display:none;"><span class="pd-ldot" style="background:#e8c42a;box-shadow:0 0 4px #e8c42a;"></span>IP Match</span>
+                  <span class="pd-leg"><span class="pd-ldot pd-ldot-ok"></span>Healthy</span>
+                </div>
+              </div>
+
+              <!-- Right: Detail Panel -->
+              <div class="pd-detail-col" id="pd-detail-col">
+                <div id="pd-flags-view" class="pd-flags-view">
+                  <p class="pd-detail-hint">← Click a flagged neuron or use Search to probe any concept</p>
+                  <div id="pd-flag-list"></div>
+                </div>
+                <div id="pd-neuron-view" class="pd-neuron-view"></div>
+                <div id="pd-search-view" class="pd-search-view"></div>
+              </div>
+            </div>
+
+          </div><!-- /pd-demo -->
+
+          <!-- Paywall Modal -->
+          <div class="pd-paywall" id="pd-paywall">
+            <div class="pd-pw-card" id="pd-pw-card"></div>
+          </div>
+        </div><!-- /grid -->
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         10 — NEXT PRODUCT SPINOFF: AETHER MODELS
+         ================================================================ -->
+    <section class="slide" data-slide="10">
+      <div class="content-wrapper" style="display:flex;flex-direction:column;gap:0.5rem;height:100%;box-sizing:border-box;justify-content:center;">
+        <span class="slide-tag">// 10 — PRODUCT PIPELINE</span>
+        <h1>More to Come — A Growing Product Pipeline</h1>
+        <h2>Aether Models ships next: fully interpretable SOTA via API. Hyper-compressed models, enterprise tooling, and more follow the flywheel.</h2>
+
+        <div class="aether-slide-grid">
+
+          <!-- Left: highlights + comparison table -->
+          <div style="display:flex;flex-direction:column;gap:1rem;">
+
+            <div style="display:flex;flex-direction:column;gap:0.4rem;">
+              <div class="aether-highlight-row">
+                <span class="aether-hl-check">✓</span>
+                <div>
+                  <span class="aether-hl-title">Fully Interpretable &amp; Steerable</span>
+                  <span class="aether-hl-desc">Every neuron maps to one concept. Correct behavior directly — no retraining required.</span>
+                </div>
+              </div>
+              <div class="aether-highlight-row">
+                <span class="aether-hl-check">✓</span>
+                <div>
+                  <span class="aether-hl-title">No Performance Trade-off</span>
+                  <span class="aether-hl-desc">~10× fewer parameters than leading SOTA models at equivalent or better performance.</span>
+                </div>
+              </div>
+              <div class="aether-highlight-row">
+                <span class="aether-hl-check">✓</span>
+                <div>
+                  <span class="aether-hl-title">API-First, Drop-In Replacement</span>
+                  <span class="aether-hl-desc">Same API surface as frontier models. Switch without changing your stack.</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.6rem;">
+              <div style="font-family:'Chakra Petch',monospace;font-size:0.65rem;font-weight:700;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.3rem;">Product Pipeline</div>
+              <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--primary);">
+                <span style="color:var(--primary);">▶</span> Aether Models — frontier models via API
+              </div>
+              <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--secondary);">
+                <span>▶</span> Hyper-compressed models
+              </div>
+              <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--text-secondary);">
+                <span>▶</span> Enterprise interpretability tooling
+              </div>
+            </div>
+            <div class="aether-compare">
+              <div class="ac-header">
+                <div class="ac-metric-spacer"></div>
+                <div class="ac-col-label ac-sota-label">SOTA Models</div>
+                <div class="ac-col-label ac-aether-label">Aether</div>
+              </div>
+              <div class="ac-row">
+                <div class="ac-metric-name">Size</div>
+                <div class="ac-sota-cell">
+                  <span class="ac-val">~70B</span>
+                  <span class="ac-sub">avg. parameters</span>
+                  <div class="ac-bar-wrap"><div class="ac-bar ac-bar-sota ac-bar-animate" style="--w:100%;"></div></div>
+                </div>
+                <div class="ac-aether-cell">
+                  <span class="ac-val ac-good">~7B</span>
+                  <span class="ac-sub ac-good">10× smaller</span>
+                  <div class="ac-bar-wrap"><div class="ac-bar ac-bar-aether ac-bar-animate" style="--w:10%;"></div></div>
+                </div>
+              </div>
+              <div class="ac-row">
+                <div class="ac-metric-name">Performance</div>
+                <div class="ac-sota-cell">
+                  <span class="ac-val">SOTA</span>
+                  <div class="ac-bar-wrap"><div class="ac-bar ac-bar-sota ac-bar-animate" style="--w:87%;"></div></div>
+                </div>
+                <div class="ac-aether-cell">
+                  <span class="ac-val ac-good">SOTA+</span>
+                  <div class="ac-bar-wrap"><div class="ac-bar ac-bar-aether ac-bar-animate" style="--w:95%;"></div></div>
+                </div>
+              </div>
+              <div class="ac-row">
+                <div class="ac-metric-name">Interpretable</div>
+                <div class="ac-sota-cell ac-cell-bool">
+                  <span class="ac-cross">✗</span>
+                  <span class="ac-sub">black box</span>
+                </div>
+                <div class="ac-aether-cell ac-cell-bool">
+                  <span class="ac-check">✓</span>
+                  <span class="ac-sub ac-good">fully interpretable</span>
+                </div>
+              </div>
+              <div class="ac-row">
+                <div class="ac-metric-name">Steerable</div>
+                <div class="ac-sota-cell ac-cell-bool">
+                  <span class="ac-cross">✗</span>
+                  <span class="ac-sub">trial &amp; error + retraining</span>
+                </div>
+                <div class="ac-aether-cell ac-cell-bool">
+                  <span class="ac-check">✓</span>
+                  <span class="ac-sub ac-good">targeted, no retraining</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: animated glass-box model family -->
+          <div class="aether-canvas-wrap">
+            <canvas id="aether-models-canvas"></canvas>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         11 — MARKET OPPORTUNITY
+         ================================================================ -->
+    <section class="slide" data-slide="11">
+      <div class="content-wrapper">
+        <span class="slide-tag">// 11 — MARKET OPPORTUNITY</span>
+        <h1>Periodica &amp; Aether Market: $1B Today, $25B by 2035.</h1>
+        <h2>2K+ companies training proprietary models, growing 38% YoY with significant automation and regulation tailwinds.</h2>
+
+        <div class="metric-row cols-4" style="margin-top:1rem;">
+          <div class="metric-card">
+            <div class="metric-value">$1B</div>
+            <div class="metric-label">Current SAM</div>
+            <div class="metric-sub">2,000+ companies × avg $40K/mo (comparable to Fiddler/W&amp;B enterprise)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">$25B</div>
+            <div class="metric-label">2035 TAM</div>
+            <div class="metric-sub">$1B SAM compounded at 38% CAGR</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value cyan">38%</div>
+            <div class="metric-label">CAGR</div>
+            <div class="metric-sub">Domain-specific LLM adoption</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value gold">2,000+</div>
+            <div class="metric-label">Target Cos.</div>
+            <div class="metric-sub">17 verticals · proprietary database</div>
+          </div>
+        </div>
+
+        <div class="split-col" style="margin-top:1rem;">
+          <div>
+            <h3>TAM Projection — 2025 → 2035</h3>
+            <div class="chart-wrap">
+              <div class="chart-bars" id="tam-chart">
+                <div class="bar-col">
+                  <span class="bar-val">$1.0B</span>
+                  <div class="bar" data-pct="4"></div>
+                  <span class="bar-yr">2025</span>
+                </div>
+                <div class="bar-col">
+                  <span class="bar-val">$5.0B</span>
+                  <div class="bar" data-pct="20"></div>
+                  <span class="bar-yr">2030</span>
+                </div>
+                <div class="bar-col">
+                  <span class="bar-val">$25B</span>
+                  <div class="bar highlight" data-pct="100"></div>
+                  <span class="bar-yr hi">2035</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Why Now</h3>
+            <div class="feature-card" style="margin-bottom:0.8rem;">
+              <h4>Automation Ceiling</h4>
+              <p><strong>Interpretability is the unlock for enterprise AI.</strong></p>
+            </div>
+            <div class="feature-card">
+              <h4>Regulatory = Forced Demand</h4>
+              <p>EU AI Act + FDA AI guidance make interpretability mandatory. <strong>Every regulated company is a forced buyer.</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         12 — THE TEAM
+         ================================================================ -->
+    <section class="slide" data-slide="12">
+      <div class="content-wrapper">
+        <span class="slide-tag">// 12 — THE TEAM</span>
+        <h1>The Team</h1>
+        <h2>Mathematical rigor, entrepreneurial experience, and product depth — actively seeking a seasoned researcher passionate about interpretability.</h2>
+
+        <div class="team-grid">
+          <div class="team-card">
+            <img class="team-photo" src="team_images/taha_bouhsine_profile.jpeg" alt="Taha Bouhsine" loading="lazy" />
+            <div class="team-name">Taha Bouhsine</div>
+            <div class="team-role">CEO &amp; Inventor</div>
+            <p class="team-bio">Architect of Physics Grounded AI. Author of the ICML 2026 interpretability methodology.</p>
+            <div class="team-tags">
+              <span class="team-tag">GOOGLE DEV</span>
+              <span class="team-tag">MATHEMATICIAN</span>
+            </div>
+          </div>
+
+          <div class="team-card">
+            <img class="team-photo" src="team_images/douglas.jpeg" alt="Douglas Seo" loading="lazy" />
+            <div class="team-name">Douglas Seo</div>
+            <div class="team-role">Head of Product</div>
+            <p class="team-bio">3× founder with deep enterprise GTM. Founders Fund network.</p>
+            <div class="team-tags">
+              <span class="team-tag">FOUNDERS FUND</span>
+              <span class="team-tag">3× FOUNDER</span>
+              <span class="team-tag">BERKELEY CS</span>
+            </div>
+          </div>
+
+          <div class="team-card">
+            <img class="team-photo" src="team_images/jose_miguel_luna.jpeg" alt="Jose Miguel Luna" loading="lazy" />
+            <div class="team-name">Jose Miguel Luna</div>
+            <div class="team-role">Angel Investor &amp; Advisor</div>
+            <p class="team-bio">Ex-Apple product leader. Shipped AI/ML to hundreds of millions. Columbia MBA + MS AI/ML.</p>
+            <div class="team-tags">
+              <span class="team-tag">EX-APPLE</span>
+              <span class="team-tag">MBA + MS AI/ML</span>
+            </div>
+          </div>
+
+          <div class="team-card" style="border-color:rgba(120,196,164,0.15); background:rgba(120,196,164,0.02);">
+            <div style="width:clamp(110px,16vw,160px);height:clamp(110px,16vw,160px);border-radius:50%;border:2px dashed rgba(120,196,164,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(120,196,164,0.3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </div>
+            <div class="team-name" style="color:rgba(120,196,164,0.4);">Open Role</div>
+            <div class="team-role" style="color:rgba(90,181,200,0.4);">Co-Founder</div>
+            <p class="team-bio" style="color:var(--text-muted); font-style:italic;">Seeking a seasoned researcher passionate about interpretability.</p>
+            <div class="team-tags">
+              <span class="team-tag" style="border-color:rgba(120,196,164,0.15);color:rgba(120,196,164,0.35);">RESEARCHER</span>
+              <span class="team-tag" style="border-color:rgba(120,196,164,0.15);color:rgba(120,196,164,0.35);">INTERPRETABILITY</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="advisors-strip">
+          <span class="adv-label">Advisors</span>
+          <span class="adv-names">Head of IBM AI Research (15 years) &nbsp;·&nbsp; CEO of Emergence AI</span>
+          <span class="adv-note">Names available under NDA</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         14 — THE ASK
+         ================================================================ -->
+    <section class="slide" data-slide="13">
+      <div class="content-wrapper">
+        <span class="slide-tag">// 13 — THE ASK</span>
+
+        <div class="ask-amount">$250,000</div>
+
+        <div class="ask-terms-row">
+          <div class="ask-term">
+            <div class="ask-term-label">Round</div>
+            <div class="ask-term-value">Friends &amp; Family</div>
+          </div>
+          <div class="ask-term-sep"></div>
+          <div class="ask-term">
+            <div class="ask-term-label">Instrument</div>
+            <div class="ask-term-value">Post-Money SAFE</div>
+          </div>
+          <div class="ask-term-sep"></div>
+          <div class="ask-term">
+            <div class="ask-term-label">Valuation Cap</div>
+            <div class="ask-term-value">$5M</div>
+          </div>
+          <div class="ask-term-sep"></div>
+          <div class="ask-term">
+            <div class="ask-term-label">Runway to Pre-Seed</div>
+            <div class="ask-term-value">6–12 Months</div>
+          </div>
+          <div class="ask-term-sep"></div>
+          <div class="ask-term">
+            <div class="ask-term-label">Min. Ticket</div>
+            <div class="ask-term-value">$50,000</div>
+          </div>
+        </div>
+
+        <div class="split-col" style="margin-top:3.5rem;grid-template-columns:2fr 2fr;gap:4rem;">
+          <div style="display:flex; flex-direction:column; gap:0.5rem;">
+            <h3>Use of Funds</h3>
+
+            <!-- Chart: columns are full chart height; numbers float above each bar -->
+            <div style="display:flex; gap:clamp(8px,1.2vw,16px); height:clamp(160px,26vh,260px);">
+
+              <!-- Compute 30% -->
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:0.3rem; height:100%;">
+                <span style="font-family:'Chakra Petch',monospace; font-size:clamp(1rem,2vw,1.6rem); font-weight:700; color:var(--primary); line-height:1;">30%</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:clamp(0.6rem,0.8vw,0.72rem); color:rgba(62,207,95,0.6); margin-bottom:0.15rem;">$75K</span>
+                <div style="width:100%; height:30%; background:rgba(62,207,95,0.15); border:1px solid var(--primary); border-bottom:none;"></div>
+              </div>
+
+              <!-- Talent 40% -->
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:0.3rem; height:100%;">
+                <span style="font-family:'Chakra Petch',monospace; font-size:clamp(1rem,2vw,1.6rem); font-weight:700; color:var(--accent); line-height:1;">40%</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:clamp(0.6rem,0.8vw,0.72rem); color:rgba(232,196,42,0.6); margin-bottom:0.15rem;">$100K</span>
+                <div style="width:100%; height:40%; background:rgba(232,196,42,0.15); border:1px solid var(--accent); border-bottom:none;"></div>
+              </div>
+
+              <!-- Business Operations 30% -->
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:0.3rem; height:100%;">
+                <span style="font-family:'Chakra Petch',monospace; font-size:clamp(1rem,2vw,1.6rem); font-weight:700; color:var(--secondary); line-height:1;">30%</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:clamp(0.6rem,0.8vw,0.72rem); color:rgba(56,201,196,0.6); margin-bottom:0.15rem;">$75K</span>
+                <div style="width:100%; height:30%; background:rgba(56,201,196,0.15); border:1px solid var(--secondary); border-bottom:none;"></div>
+              </div>
+
+            </div>
+
+            <!-- Baseline + labels -->
+            <div style="border-top:1px solid var(--border); display:flex; gap:clamp(8px,1.2vw,16px); padding-top:0.45rem;">
+              <div style="flex:1; text-align:center; font-family:'Chakra Petch',monospace; font-size:clamp(0.52rem,0.75vw,0.65rem); font-weight:600; color:var(--primary); text-transform:uppercase; letter-spacing:1px; line-height:1.5;">Compute</div>
+              <div style="flex:1; text-align:center; font-family:'Chakra Petch',monospace; font-size:clamp(0.52rem,0.75vw,0.65rem); font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:1px; line-height:1.5;">Talent</div>
+              <div style="flex:1; text-align:center; font-family:'Chakra Petch',monospace; font-size:clamp(0.52rem,0.75vw,0.65rem); font-weight:600; color:var(--secondary); text-transform:uppercase; letter-spacing:1px; line-height:1.5;">Business<br>Operations</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:0.9rem;">
+            <h3>Key Milestones Achieved with Funding Round</h3>
+
+            <!-- Bucket 1: Months 1–3 -->
+            <div>
+              <div style="font-family:'Chakra Petch',monospace;font-size:clamp(0.72rem,1.1vw,0.85rem);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:0.4rem;border-bottom:1px solid rgba(232,196,42,0.2);padding-bottom:0.25rem;">Months 1–3</div>
+              <div class="milestone-list" style="margin:0;">
+                <div class="milestone-item">Patent core technology</div>
+                <div class="milestone-item">Submit to NeurIPS 2026</div>
+                <div class="milestone-item">Ship Periodica v1</div>
+              </div>
+            </div>
+
+            <!-- Bucket 2: Months 3–12 -->
+            <div>
+              <div style="font-family:'Chakra Petch',monospace;font-size:clamp(0.72rem,1.1vw,0.85rem);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin-bottom:0.4rem;border-bottom:1px solid rgba(53,194,84,0.2);padding-bottom:0.25rem;">Months 3–12</div>
+              <div class="milestone-list" style="margin:0;">
+                <div class="milestone-item">Launch Periodica — early adoption</div>
+                <div class="milestone-item">Next research tranche</div>
+                <div class="milestone-item">Raise pre-seed ($1–3M)</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================
+         14 — CLOSING
+         ================================================================ -->
+    <section class="slide" data-slide="14">
+      <div class="content-wrapper">
+        <!-- Atom SVG logo -->
+        <div style="margin-bottom:1.4rem;">
+          <svg class="atom-icon" width="clamp(40px,6vw,70px)" height="clamp(40px,6vw,70px)" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:clamp(40px,6vw,70px);height:clamp(40px,6vw,70px);">
+            <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#5ab5c8" stroke-width="1.5" opacity="0.6"/>
+            <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#78c4a4" stroke-width="1.5" opacity="0.6" transform="rotate(60 50 50)"/>
+            <ellipse cx="50" cy="50" rx="45" ry="18" stroke="#5ab5c8" stroke-width="1.5" opacity="0.6" transform="rotate(120 50 50)"/>
+            <circle cx="50" cy="50" r="5" fill="#78c4a4" filter="url(#glow)"/>
+            <defs><filter id="glow2"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          </svg>
+        </div>
+
+        <h1 class="cover-title">azetta.ai</h1>
+
+        <p style="font-size:clamp(1rem,1.4vw,1.2rem); color:var(--text-secondary); font-weight:400; margin:0.5rem 0 0.4rem; line-height:1.6; font-family:'IBM Plex Mono',monospace;">
+          The only AI that explains every decision it makes.
+        </p>
+
+        <p style="font-size:clamp(0.8rem,1vw,0.9rem); color:var(--text-muted); margin:0 0 2rem; font-family:'IBM Plex Mono',monospace; letter-spacing:1px;">
+          Physics Grounded AI
+        </p>
+
+        <div style="font-size:clamp(0.8rem,1vw,0.9rem); color:var(--secondary); letter-spacing:3px; text-transform:uppercase; font-family:'Chakra Petch',monospace; font-weight:600; text-shadow: 0 0 8px var(--secondary-glow);">
+          contact@azetta.ai
+        </div>
+      </div>
+
+      <div class="cover-footer">
+        <span class="cover-footer-text">FEBRUARY 2026</span>
+        <span class="cover-footer-text">CONFIDENTIAL — FOR DISCUSSION PURPOSES ONLY</span>
+      </div>
+    </section>
+
+  </div><!-- #deck -->
+
+  <script src="script.js"></script>
+</body>
+</html>
